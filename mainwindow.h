@@ -10,6 +10,8 @@
 #include "TipoPersona/clientemensualidad.h"
 #include "TipoPersona/operario.h"
 #include "ManejoTablas.h"
+#include "Impresora/config/printconfig.h"
+#include "Impresora/PrintManager.h"
 
 #include <QPainter>
 #include <QPrinter>
@@ -41,6 +43,11 @@ public:
     void CrearTablas();
     void ConectarTablas();
     void initInterfaz();
+
+    ReciboEntrada structEntrada;
+    ReciboMensualidad structMensualidad;
+    ReciboProductos structVentaProductos;
+    PrintManager pm;
 
 private slots:
 
@@ -110,8 +117,8 @@ private:
     QString propietarioParqueadero;
     QString nITParquieadero;
     QString reglamentoParqueadero;
-    QString imagenDerecha;
-    QString imagenIzquierda;
+   // QString imagenDerecha;
+   // QString imagenIzquierda;
 
 
 

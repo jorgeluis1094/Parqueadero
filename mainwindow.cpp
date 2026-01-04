@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     if( db.open() )
     {
        qDebug()<<"se ha conectado a la DB";
-       CrearTablas();
+       //CrearTablas();
        ConectarTablas();
     }
     else
@@ -59,6 +59,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //valorNocheOtro=query.value(3).toInt();
 
 
+    /*
     query.exec("SELECT * FROM TiemposLimites");
     query.next();
     hhUmbralD=query.value(0).toInt();
@@ -68,6 +69,7 @@ MainWindow::MainWindow(QWidget *parent) :
     hhUmbralN=query.value(2).toInt();
     MMUmbralN=query.value(3).toInt();
     ssUmbralN=0;
+*/
 
     QStringList rutasArchivos, cadenas;
     rutasArchivos<<"/opt/Parqueadero/Archivos/NombreParqueadero.txt"
@@ -101,13 +103,13 @@ MainWindow::MainWindow(QWidget *parent) :
     stream.setDevice(&file);
     while (!stream.atEnd())
     {
-                 reglamentoParqueadero += stream.readLine();
-                 reglamentoParqueadero +='\n';
+       reglamentoParqueadero += stream.readLine();
+       reglamentoParqueadero +='\n';
     }
 
     file.close();
-    imagenDerecha=rutasArchivos.at(6);
-    imagenIzquierda=rutasArchivos.at(7);
+    //imagenDerecha=rutasArchivos.at(6);
+    //imagenIzquierda=rutasArchivos.at(7);
     //ui->tableInOutCar->setVisible(false);
     //ui->tableViewOtros->setVisible(false);
     //ui->tableViewRegVeh->setVisible(false);
@@ -119,8 +121,24 @@ MainWindow::MainWindow(QWidget *parent) :
     VecTipoVeh.push_back("Moto-Lavada_1");
     VecTipoVeh.push_back("Moto-Lavada_2");
 
-
     initInterfaz();
+
+    // Cargar configuración de impresión
+    PrintConfig::instance().load( "../../Impresora/config/" );
+
+     /*
+     *
+     *
+     *
+     *
+     */
+
+
+    //ciboMensualidad structMensualidad;
+
+
+
+
 }
 
 
@@ -207,280 +225,7 @@ void MainWindow::imprimir(int tipoRecibo)
 
     //printer.setPageMargins(1,1,1,1,QPrinter::Millimeter); //Modificar
     //printer.setPaperSize(tamPaper,QPrinter::Millimeter);  //Modificar
-    printDocument(&printer, tipoRecibo);
-}
-
-
-
-void MainWindow::printDocument(QPrinter *printer, int tipoRecibo)
-{
-    QPainter painter;
-    painter.begin(printer);
-
-
-    //int derecho, superior,izquierdo;
-    //derecho = printer->pageRect().right(); //tomo el valor de los márgenes
-    //superior = printer->pageRect().top();
-    //izquierdo = printer->pageRect().left();
-
-
-    // Obtener los márgenes de la página
-    //QMarginsF currentMargins = printer->pageLayout.margins();
-    int derecho = printer->pageLayout().fullRect().right();
-    int superior = printer->pageLayout().fullRect().top();
-    int izquierdo = printer->pageLayout().fullRect().left();
-
-    //SE REALIZA ENCABEZADO
-    QFont ftTitulo("Arial", 11, QFont::Bold);
-    QFontMetrics tamTitulo(ftTitulo, printer);
-    QRect rect(izquierdo, superior, derecho, tamTitulo.lineSpacing());
-
-    QRectF target= rect;
-    target.setHeight(500);
-
-    target.setWidth(derecho/2);
-    QImage image(imagenIzquierda);
-    painter.drawImage(target, image);
-
-    target.translate(derecho/2,0);
-    QImage image2(imagenDerecha);
-    painter.drawImage(target, image2);
-    rect.translate(0,target.height());
-
-
-    painter.setFont(ftTitulo);
-    painter.drawText(rect, Qt::AlignCenter, "***Parqueadero***");
-    //rect.translate(0, rect.height());
-    rect.translate(0, tamTitulo.lineSpacing());
-
-    painter.drawText(rect, Qt::AlignCenter, NombreParqueadero);
-    //rect.translate(0, rect.height());
-    rect.translate(0, tamTitulo.lineSpacing());
-
-    QFont ftDireccion("Arial", 7, QFont::Black);
-    painter.setFont(ftDireccion);
-    QFontMetrics tamDireccion(ftDireccion, printer);
-    painter.drawText(rect, Qt::AlignCenter, direccionParqueadero);
-    rect.translate(0, tamDireccion.lineSpacing());
-
-    QFont ftTelefono("Arial", 7, QFont::Black);
-    painter.setFont(ftTelefono);
-    QFontMetrics tamTelefono(ftTelefono, printer);
-    painter.drawText(rect, Qt::AlignCenter, telefonoParqueadero);
-    rect.translate(0, tamTelefono.lineSpacing());
-
-    QFont ftPropietrario("Arial", 7, QFont::Black);
-    painter.setFont(ftPropietrario);
-    QFontMetrics tamPropietario(ftPropietrario, printer);
-    painter.drawText(rect, Qt::AlignCenter, propietarioParqueadero+nITParquieadero);
-
-
-    //TERMINA ENCABEZADO//
-    if(impCopia)
-    {   painter.setFont(ftTitulo);
-        rect.translate(0, tamPropietario.lineSpacing());
-        painter.drawText(rect, Qt::AlignCenter, "Este Recibo Es Una Copia!!!");
-        impCopia=false;
-    }
-
-    //DATOS DEL VEHICULO, DEL OPERARIO Y DE LA HORA//
-    rect.translate(0, tamPropietario.lineSpacing());
-
-    QFont ftInfo("Helvetica", 8, QFont::Bold);
-    QFontMetrics tamInfo(ftInfo, printer);
-    rect.setHeight(tamInfo.lineSpacing());
-    rect.translate(0, rect.height());
-
-
-    //REGLAMENTO DEL PARQUEADERO//
-    QFont ftReglas("Arial",6,QFont::Bold);
-    QFontMetrics tamReglas(ftReglas, printer);
-
-    //PLACA
-    QFont ftPlaca("Arial", 20, QFont::Bold);
-    QFontMetrics tamPlaca(ftPlaca, printer);
-
-    //Placa codigo de barras
-    QFont ftCodigoB("New", 40);
-    QFontMetrics tamCodigoB(ftCodigoB, printer);
-
-    switch(tipoRecibo){
-
-    case 0://para vehiculos que entran al parqueadero
-
-            painter.setFont(ftInfo);
-
-            painter.drawText(rect, Qt::AlignJustify, "Atendido Por: "+OperarioTurno);
-            rect.translate(0, rect.height());
-
-            painter.drawText(rect, Qt::AlignJustify, "Fecha: "+vehiculo->getHoraEntrada().toString("dd-MM-yyyy"));
-            rect.translate(0, rect.height());
-
-            painter.drawText(rect, Qt::AlignJustify, "Hora de Entrada: "+vehiculo->getHoraEntrada().toString("hh:mm:ss"));
-            rect.translate(0, rect.height());
-
-            painter.drawText(rect, Qt::AlignJustify, "Tipo de Vehiculo: "+vehiculo->getTipoVehiculo());
-            rect.translate(0, rect.height());
-
-            painter.drawText(rect, Qt::AlignJustify, "Cantidad: "+QString::number(vehiculo->getCantidad() ));
-            rect.translate(0, rect.height());
-
-            painter.drawText(rect, Qt::AlignJustify, "Placa: ");
-            rect.translate(0, rect.height());
-
-            painter.setFont(ftPlaca);
-            rect.setHeight(tamPlaca.lineSpacing());
-            painter.drawText(rect, Qt::AlignHCenter, "***  "+vehiculo->getPlaca()+"  ***");
-            rect.translate(0, rect.height());
-
-            painter.setFont(ftCodigoB);
-            painter.drawText(rect, Qt::AlignCenter, "*"+vehiculo->getPlaca()+"*");
-            rect.translate(0, rect.height());
-
-            delete vehiculo;
-            //FIN DATOS DEL VEHICULO, DEL OPERARIO Y DE LA HORA//
-
-            //REGLAMENTO DEL PARQUEADERO//
-            painter.setFont(ftReglas);
-            rect.setHeight(tamReglas.lineSpacing()*3);
-            painter.drawText(rect, Qt::AlignCenter, "Servicio de Parqueadero:\n Reglamento \n");
-            rect.translate(0, rect.height());
-            rect.setHeight(tamReglas.lineSpacing()*18);
-            painter.drawText(rect, Qt::AlignCenter, reglamentoParqueadero);
-            //FIN DEL REGLAMENTO DEL PARQUEADERO//
-
-            painter.setFont(ftReglas);
-            rect.translate(0, rect.height());
-            rect.setHeight(tamReglas.lineSpacing()*2);
-            painter.drawText(rect, Qt::AlignJustify, "Ing. Jorge Luis Enriquez Gonzalez.\n Tel: 3113718421");
-
-        break;
-
-    case 1: //imprime recibos para vehiculos que salen del parqueadero
-
-        painter.setFont(ftInfo);
-
-        painter.drawText(rect, Qt::AlignJustify, "Placa: "+vehiculo->getPlaca());
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Tipo de Vehiculo: "+vehiculo->getTipoVehiculo());
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Registro la entrada: "+vehiculo->getNomRegIn());
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Registro la salida: "+vehiculo->getNomRegOut());
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Entrada: "+vehiculo->getHoraEntrada().toString("hh:mm:ss dd-MM-yyyy"));
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Salida: "+vehiculo->getHoraSalida().toString("hh:mm:ss  dd-MM-yyyy"));
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Tiempo de Parqueo: "+vehiculo->getTiempoParqueo());
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Total Pagado: "+QString::number(vehiculo->getValorPagado()));
-        rect.translate(0, rect.height());
-
-        painter.setFont(ftReglas);
-        rect.translate(0, rect.height());
-        rect.setHeight(tamReglas.lineSpacing()*2);
-        painter.drawText(rect, Qt::AlignJustify, "Ing. Jorge Luis Enriquez Gonzalez.\n Tel: 3113718421");
-
-        delete vehiculo;
-        //FIN DATOS DEL VEHICULO, DEL OPERARIO Y DE LA HORA//
-            break;
-    case 2://Impresion para Mensualidades
-
-        painter.setFont(ftInfo);
-
-        painter.drawText(rect, Qt::AlignCenter, "Mensualidad");
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Tipo Vehiculo: "+vehiculo->getTipoVehiculo());
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Placa: "+vehiculo->getPlaca());
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Propietario: "+vehiculo->getPropietario());
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Pago Por: $"+QString::number(vehiculo->getValorPagado()));
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Fecha Inicio: "+vehiculo->getHoraEntrada().toString("dd-MM-yyyy"));
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Fecha Finalizacion: "+vehiculo->getHoraSalida().toString("dd-MM-yyyy"));
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Atendido Por: "+vehiculo->getNomRegIn());
-        rect.translate(0, rect.height());
-
-        delete vehiculo;
-
-        //REGLAMENTO DEL PARQUEADERO//
-        painter.setFont(ftReglas);
-        rect.setHeight(tamReglas.lineSpacing()*3);
-        painter.drawText(rect, Qt::AlignCenter, "Servicio de Parqueadero:\n Reglamento \n");
-        rect.translate(0, rect.height());
-        rect.setHeight(tamReglas.lineSpacing()*18);//17
-        painter.drawText(rect, Qt::AlignCenter, reglamentoParqueadero);
-        //FIN DEL REGLAMENTO DEL PARQUEADERO//
-
-        painter.setFont(ftReglas);
-        rect.translate(0, rect.height());
-        rect.setHeight(tamReglas.lineSpacing()*2);//2
-        painter.drawText(rect, Qt::AlignJustify, "Ing. Jorge Luis Enriquez Gonzalez.\n Tel: 3113718421");
-            break;
-    case 3:
-//impresion de recibo de salida con la totalidad realizado
-
-        painter.setFont(ftInfo);
-
-        painter.drawText(rect, Qt::AlignJustify, "Operario: "+trabajador->getNombre());
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Hora Inicio: "+trabajador->getHoraEntrada());
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Hora Salida: "+trabajador->getHoraSalida());
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Total Mensualidades: $"+QString::number(trabajador->getTotalMensualidades()));
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Numero Mensualidades: "+QString::number(trabajador->getNumMensualidadesPagadas()));
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Total Motos: $"+QString::number(trabajador->getTotalMotos()));
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Total Carros: $"+QString::number(trabajador->getTotalCarros()));
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Total Otros Articulos: $"+QString::number(trabajador->getTotalOtrosArticulos()));
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Total Otros Pagos: $"+QString::number(trabajador->getTotalOtrosPagos()));
-        rect.translate(0, rect.height());
-
-        painter.drawText(rect, Qt::AlignJustify, "Entrega Total: $"+QString::number(trabajador->getTotalRealizado()));
-        rect.translate(0, rect.height());
-
-        painter.setFont(ftReglas);
-        rect.translate(0, rect.height());
-        rect.setHeight(tamReglas.lineSpacing()*2);
-        painter.drawText(rect, Qt::AlignJustify, "Ing. Jorge Luis Enriquez Gonzalez.\n Tel: 3113718421");
-
-        delete trabajador;
-
-        break;
-    }
-    painter.end();
+    //printDocument(&printer, tipoRecibo);
 }
 
 void MainWindow::on_pushButtonRegistrar_clicked()//Registra una mensualidad
@@ -519,7 +264,18 @@ void MainWindow::on_pushButtonRegistrar_clicked()//Registra una mensualidad
 
                     RefrescarTablas();
 
-                    imprimir(2);//imprimir mensualidad
+                    //iMPRIMIR RECIBO
+                    structMensualidad.placa = placa;
+                    structMensualidad.fechaPago = fechapago;
+                    structMensualidad.inicioMensualidad = fechaInicio.mid(0,10);
+                    structMensualidad.finMensualidad = fechaFin.mid(0,10);
+                    structMensualidad.tipoVehiculo = "Moto";
+                    structMensualidad.pagoRecibido = valorPago;
+                    structMensualidad.operarioParqueadero = OperarioTurno;
+
+                    pm.printReciboMensualidad(structMensualidad);
+
+
             }
             else
                 QMessageBox::critical(this, NombreParqueadero,tr("<font size = 15 color = black >Datos Importantes Sin LLenar"));
@@ -674,7 +430,17 @@ void MainWindow::on_lineEditRegInOut_returnPressed()//registra la entrada de un 
                     qDebug()<<"Error al ingresar vehiculo";
 
                 ui->rB_Normal->setChecked(true);
-                imprimir(0);//imprimir recibo de entrada
+
+                //imprime
+                structEntrada.placa = vehiculo->getPlaca();
+                structEntrada.fechaHora = vehiculo->getHoraEntrada().toString("dd-MM-yyyy hh:mm:ss");//"2025-12-22 18:30";
+                structEntrada.operarioParqueadero = OperarioTurno;
+                structEntrada.tipoVehiculo = vehiculo->getTipoVehiculo();
+
+                pm.printReciboEntrada(structEntrada);
+
+                delete vehiculo;
+
                 }
               }
 
@@ -918,15 +684,27 @@ void MainWindow::on_pushButtonRegPago_clicked()//actualiza el pago de una mensua
                 "(Placa,Entrada,Salida,Pago,Reg_Ingreso, Reg_Salida, Tipo,Tiempo_Total)"
                    "VALUES ( '"+placa+"', strftime('%Y-%m-%d %H:%M:%S', 'now'), strftime('%Y-%m-%d %H:%M:%S', 'now') , '"+ui->lineEditRegPagoPlata->text()+"', '"+OperarioTurno+"', '"+OperarioTurno+"', 'Moto','Mensualidad')");
 
-            query.exec("SELECT Placa, Nombre, Valor, Inicio, Fin, Registro: FROM Mensualidades WHERE "
-                       "Nombre='"+ui->lineEditRegPago->text()+"' "
+            QString consulta =  "SELECT Placa, Nombre, Valor, Inicio, Fin, Registro FROM Mensualidades WHERE "
+                                "Nombre='"+ui->lineEditRegPago->text()+"' OR "
+                                "Placa='"+ui->lineEditRegPago->text().toUpper()+"' ";
+
+
+
+            query.exec("SELECT Placa, Nombre, Valor, Inicio, Fin, Registro FROM Mensualidades WHERE "
+                       "Nombre='"+ui->lineEditRegPago->text()+"' OR "
                        "Placa='"+ui->lineEditRegPago->text().toUpper()+"' ");
             query.next();
-            vehiculo = new Vehiculo(query.value(0).toString(), "Moto", query.value(3).toDateTime(), query.value(5).toString());
-            vehiculo->Propietario(query.value(1).toString());
-            vehiculo->ValorPagado(query.value(2).toInt());
-            vehiculo->HoraSalida(query.value(4).toDateTime());
-            imprimir(2);//imprime un recibo para mensualidad
+
+            //iMPRIMIR RECIBO
+            structMensualidad.placa = query.value(0).toString();
+            structMensualidad.fechaPago = QDateTime::currentDateTime().toString("yyyy-MM-dd");
+            structMensualidad.inicioMensualidad = query.value(3).toString();
+            structMensualidad.finMensualidad = query.value(4).toString();
+            structMensualidad.tipoVehiculo = "Moto";
+            structMensualidad.pagoRecibido = query.value(2).toString();
+            structMensualidad.operarioParqueadero = OperarioTurno;
+
+            pm.printReciboMensualidad(structMensualidad);
 
         //Actualiza la tabla de mensualidades y la de ingreso
         //y salida de veiculos donde se registra la placa y el pago para sumar a lo que debe entregar el operario
@@ -1001,7 +779,7 @@ void MainWindow::RefrescarTablas()//actualiza las tablas y borra los lineEdit
     //ui->lineEditCantOtrosArt->clear();
 }
 
-void MainWindow::on_tableInOutCar_doubleClicked(const QModelIndex &index)
+void MainWindow::on_tableInOutCar_doubleClicked(const QModelIndex &index)//opciones para imprimir cópia de recibo
 {
 
     ReciboTablas = new QDialog(this);
@@ -1064,7 +842,7 @@ void MainWindow::on_cB_Productos_currentTextChanged(const QString &arg1)
     }
 }
 
-void MainWindow::initInterfaz()
+void MainWindow::initInterfaz()//Inicia la interfaz de la tabla de produtos de la vitrina
 {
 
     // Inicializar la intefaz del combobox de productos
@@ -1111,10 +889,18 @@ void MainWindow::on_pB_VentaOtroProducto_clicked()
             query.exec(consultaSQL);
             query.next();
 
+
+
             //Inserta en la tabla de ventas para sumar total
             consultaSQL = "INSERT INTO RegVehiculos "
                           "(Placa, Entrada, Salida, Pago, Reg_Ingreso, Reg_Salida, Tipo, Tiempo_Total) "
                           "VALUES ( '"+query.value(0).toString()+"' , '"+query.value(1).toString()+"' , '"+query.value(2).toString()+"' , '"+query.value(3).toString()+"' , '"+OperarioTurno+"', '"+OperarioTurno+"', 'Producto','Producto')";
+
+            structVentaProductos.nombreProducto =  query.value(0).toString();
+            structVentaProductos.precioProducto =  query.value(3).toString();
+            structVentaProductos.fechaVenta =   query.value(1).toString();
+            structVentaProductos.operarioParqueadero    = OperarioTurno;
+            structVentaProductos.inventarioRestante    = QString::number((query.value(4).toInt()-1));
 
             query.exec(consultaSQL);
             query.next();
@@ -1123,6 +909,10 @@ void MainWindow::on_pB_VentaOtroProducto_clicked()
             consultaSQL = "UPDATE Productos SET Stock = Stock-1 WHERE Nombre='"+NomProd+"'";
             query.exec(consultaSQL);
             ui->cB_Productos->setCurrentIndex(0);
+
+
+
+            pm.printReciboVentaProductos(structVentaProductos);
 
             RefrescarTablas();
 
