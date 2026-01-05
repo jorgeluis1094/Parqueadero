@@ -35,8 +35,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void imprimir(int tipoRecibo);
-    void printDocument(QPrinter *printer, int tipoRecibo);
+    //void imprimir(int tipoRecibo);
+    //void printDocument(QPrinter *printer, int tipoRecibo);
     QString seg2time(double seg, double &ValorAPagar);
     void NuevoOperario(QString Nombre, bool Registrado);
     void RefrescarTablas();
@@ -47,6 +47,7 @@ public:
     ReciboEntrada structEntrada;
     ReciboMensualidad structMensualidad;
     ReciboProductos structVentaProductos;
+    CierreCaja cierre;
     PrintManager pm;
 
 private slots:

@@ -17,6 +17,7 @@ SOURCES += main.cpp\
     Impresora/commands/EscPosBuilder.cpp \
     Impresora/config/printconfig.cpp \
     Impresora/output/PrintDevice.cpp \
+    Impresora/receipts/CierreCajaFormatter.cpp \
     Impresora/receipts/ReceiptFormatter.cpp \
     Impresora/receipts/ReciboEntradaFormatter.cpp \
     Impresora/receipts/reciboProdutosFormatter.cpp \

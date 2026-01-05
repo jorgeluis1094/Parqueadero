@@ -55,3 +55,22 @@ bool PrintManager::printReciboVentaProductos(const ReciboProductos& data) {
 
     return ok;
 }
+
+
+bool PrintManager::printCierreCaja(const CierreCaja& data)
+{
+    CierreCajaFormatter formatter(data);
+    QByteArray bytes = formatter.format();
+
+    auto transport = std::make_unique<UsbLpTransport>("/dev/usb/lp0");
+    PrintDevice printer(std::move(transport));
+
+    if (!printer.connect())
+        return false;
+
+    bool ok = printer.send(bytes);
+    printer.disconnect();
+
+    return ok;
+}
+

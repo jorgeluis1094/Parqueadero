@@ -7,6 +7,8 @@
 #include "Impresora/receipts/ReciboEntradaFormatter.h"
 #include "Impresora/receipts/recibopagomensualidadformatter.h"
 #include "Impresora/receipts/reciboProductosFormatter.h"
+#include "Impresora/receipts/CierreCajaFormatter.h"
+
 
 
 #include "domain/reciboentrada.h"
@@ -16,9 +18,11 @@
 class PrintManager {
 public:
     PrintManager();
+
     bool printReciboEntrada(const ReciboEntrada& data);
     bool printReciboMensualidad(const ReciboMensualidad& data);
     bool printReciboVentaProductos(const ReciboProductos& data);
+    bool printCierreCaja(const CierreCaja& data);
 };
 
 

@@ -57,6 +57,7 @@ SOURCES       = ../../main.cpp \
 		../../Impresora/commands/EscPosBuilder.cpp \
 		../../Impresora/config/printconfig.cpp \
 		../../Impresora/output/PrintDevice.cpp \
+		../../Impresora/receipts/CierreCajaFormatter.cpp \
 		../../Impresora/receipts/ReceiptFormatter.cpp \
 		../../Impresora/receipts/ReciboEntradaFormatter.cpp \
 		../../Impresora/receipts/reciboProdutosFormatter.cpp \
@@ -76,6 +77,7 @@ OBJECTS       = main.o \
 		EscPosBuilder.o \
 		printconfig.o \
 		PrintDevice.o \
+		CierreCajaFormatter.o \
 		ReceiptFormatter.o \
 		ReciboEntradaFormatter.o \
 		reciboProdutosFormatter.o \
@@ -356,6 +358,7 @@ DIST          = /opt/Qt/6.9.2/gcc_64/mkspecs/features/spec_pre.prf \
 		../../Impresora/commands/EscPosBuilder.cpp \
 		../../Impresora/config/printconfig.cpp \
 		../../Impresora/output/PrintDevice.cpp \
+		../../Impresora/receipts/CierreCajaFormatter.cpp \
 		../../Impresora/receipts/ReceiptFormatter.cpp \
 		../../Impresora/receipts/ReciboEntradaFormatter.cpp \
 		../../Impresora/receipts/reciboProdutosFormatter.cpp \
@@ -883,7 +886,7 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /opt/Qt/6.9.2/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../../mainwindow.h ../../FuncioneTiempo.h ../../Impresora/PrintManager.h ../../Impresora/commands/EscPosBuilder.h ../../Impresora/config/printconfig.h ../../Impresora/output/PrintDevice.h ../../Impresora/receipts/CierreCajaFormatter.h ../../Impresora/receipts/ReceiptFormatter.h ../../Impresora/receipts/ReciboEntradaFormatter.h ../../Impresora/receipts/ReciboSalidaFormatter.h ../../Impresora/receipts/reciboProductosFormatter.h ../../Impresora/receipts/recibopagomensualidadformatter.h ../../Impresora/transport/ITransport.h ../../Impresora/transport/UsbLpTransport.h ../../ManejoTablas.h ../../TipoPersona/persona.h ../../TipoPersona/operario.h ../../TipoPersona/clientemensualidad.h ../../TipoVehiculos/vehiculo.h ../../domain/cierrecaja.h ../../domain/reciboProductos.h ../../domain/reciboentrada.h ../../domain/recibomensualidad.h ../../relojdigital.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../../main.cpp ../../Impresora/PrintManager.cpp ../../Impresora/commands/EscPosBuilder.cpp ../../Impresora/config/printconfig.cpp ../../Impresora/output/PrintDevice.cpp ../../Impresora/receipts/ReceiptFormatter.cpp ../../Impresora/receipts/ReciboEntradaFormatter.cpp ../../Impresora/receipts/reciboProdutosFormatter.cpp ../../Impresora/receipts/recibopagomensualidadformatter.cpp ../../Impresora/transport/UsbLpTransport.cpp ../../mainwindow.cpp ../../FuncionesTiempo.cpp ../../ManejoTablas.cpp ../../TipoPersona/persona.cpp ../../TipoPersona/operario.cpp ../../TipoPersona/clientemensualidad.cpp ../../TipoVehiculos/vehiculo.cpp ../../relojdigital.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../../main.cpp ../../Impresora/PrintManager.cpp ../../Impresora/commands/EscPosBuilder.cpp ../../Impresora/config/printconfig.cpp ../../Impresora/output/PrintDevice.cpp ../../Impresora/receipts/CierreCajaFormatter.cpp ../../Impresora/receipts/ReceiptFormatter.cpp ../../Impresora/receipts/ReciboEntradaFormatter.cpp ../../Impresora/receipts/reciboProdutosFormatter.cpp ../../Impresora/receipts/recibopagomensualidadformatter.cpp ../../Impresora/transport/UsbLpTransport.cpp ../../mainwindow.cpp ../../FuncionesTiempo.cpp ../../ManejoTablas.cpp ../../TipoPersona/persona.cpp ../../TipoPersona/operario.cpp ../../TipoPersona/clientemensualidad.cpp ../../TipoVehiculos/vehiculo.cpp ../../relojdigital.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../../mainwindow.ui $(DISTDIR)/
 
 
@@ -1170,6 +1173,9 @@ moc_mainwindow.cpp: ../../mainwindow.h \
 		../../domain/recibomensualidad.h \
 		../../Impresora/receipts/reciboProductosFormatter.h \
 		../../domain/reciboProductos.h \
+		../../Impresora/receipts/CierreCajaFormatter.h \
+		../../domain/cierrecaja.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QMap \
 		/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport/QPrinter \
 		/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport/qprinter.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport/qtprintsupportglobal.h \
@@ -1298,7 +1304,6 @@ moc_mainwindow.cpp: ../../mainwindow.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/QVariant \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/qvariantlist.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/qvariantmap.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtCore/QMap \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/qvector.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/qwaitcondition.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/QDeadlineTimer \
@@ -2018,6 +2023,9 @@ main.o: ../../main.cpp /opt/Qt/6.9.2/gcc_64/include/QtWidgets/QApplication \
 		../../domain/recibomensualidad.h \
 		../../Impresora/receipts/reciboProductosFormatter.h \
 		../../domain/reciboProductos.h \
+		../../Impresora/receipts/CierreCajaFormatter.h \
+		../../domain/cierrecaja.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QMap \
 		/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport/QPrinter \
 		/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport/qprinter.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport/qtprintsupportglobal.h \
@@ -2146,7 +2154,6 @@ main.o: ../../main.cpp /opt/Qt/6.9.2/gcc_64/include/QtWidgets/QApplication \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/QVariant \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/qvariantlist.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/qvariantmap.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtCore/QMap \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/qvector.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/qwaitcondition.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/QDeadlineTimer \
@@ -2364,7 +2371,10 @@ PrintManager.o: ../../Impresora/PrintManager.cpp ../../Impresora/PrintManager.h 
 		../../Impresora/receipts/recibopagomensualidadformatter.h \
 		../../domain/recibomensualidad.h \
 		../../Impresora/receipts/reciboProductosFormatter.h \
-		../../domain/reciboProductos.h
+		../../domain/reciboProductos.h \
+		../../Impresora/receipts/CierreCajaFormatter.h \
+		../../domain/cierrecaja.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QMap
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o PrintManager.o ../../Impresora/PrintManager.cpp
 
 EscPosBuilder.o: ../../Impresora/commands/EscPosBuilder.cpp ../../Impresora/commands/EscPosBuilder.h \
@@ -2696,6 +2706,156 @@ PrintDevice.o: ../../Impresora/output/PrintDevice.cpp ../../Impresora/output/Pri
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearrayview.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringfwd.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o PrintDevice.o ../../Impresora/output/PrintDevice.cpp
+
+CierreCajaFormatter.o: ../../Impresora/receipts/CierreCajaFormatter.cpp ../../Impresora/receipts/CierreCajaFormatter.h \
+		../../Impresora/receipts/ReceiptFormatter.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/QImage \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/qimage.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/qtguiglobal.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qglobal.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtcoreglobal.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtversionchecks.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtconfiginclude.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qconfig.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtcore-config.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtconfigmacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtdeprecationdefinitions.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcompilerdetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qprocessordetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsystemdetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtcoreexports.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtdeprecationmarkers.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtclasshelpermacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtpreprocessorsupport.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qassert.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtnoop.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtypes.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtversion.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtypeinfo.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontainerfwd.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsysinfo.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlogging.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qflags.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcompare_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qatomic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbasicatomic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qgenericatomic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qyieldcpu.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qconstructormacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdarwinhelpers.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qexceptionhandling.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qforeach.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qttypetraits.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qfunctionpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qglobalstatic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmalloc.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qminmax.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qnumeric.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qoverload.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qswap.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtenvironmentvariables.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtresource.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qttranslation.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qversiontagging.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/qtgui-config.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/qtguiexports.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/qcolor.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/qrgb.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qnamespace.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcompare.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstdlibdetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcomparehelpers.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20type_traits.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtmetamacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringlist.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlist.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qarraydatapointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qarraydataops.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qarraydata.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qpair.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontainertools_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qxptype_traits.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20functional.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20memory.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q17memory.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qhashfunctions.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstring.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qchar.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearray.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qrefcount.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearrayalgorithms.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearrayview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringfwd.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringliteral.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringalgorithms.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlatin1stringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qanystringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qutf8stringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringtokenizer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringbuilder.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringconverter.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringconverter_base.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qiterator.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearraylist.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qalgorithms.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringmatcher.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/qrgba64.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/qpaintdevice.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/qwindowdefs.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qobjectdefs.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qfunctionaltools_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qrect.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmargins.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q23utility.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20utility.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsize.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qpoint.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/qpixelformat.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/qtransform.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/qpolygon.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/qregion.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdatastream.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qscopedpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qiodevicebase.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qspan.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20iterator.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qline.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QByteArray \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/QPainter \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/qpainter.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/qpixmap.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qshareddata.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/qtextoption.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmetatype.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qfloat16.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmath.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtformat_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qiterable.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmetacontainer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontainerinfo.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtaggedpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qscopeguard.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/qpen.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/qbrush.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/qfontinfo.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/qfont.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qendian.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/qfontvariableaxis.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtGui/qfontmetrics.h \
+		../../Impresora/commands/EscPosBuilder.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QString \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QtMath \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QStringEncoder \
+		../../Impresora/config/printconfig.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QStringList \
+		../../domain/cierrecaja.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QMap \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmap.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qshareddata_impl.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o CierreCajaFormatter.o ../../Impresora/receipts/CierreCajaFormatter.cpp
 
 ReceiptFormatter.o: ../../Impresora/receipts/ReceiptFormatter.cpp ../../Impresora/receipts/ReceiptFormatter.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtGui/QImage \
@@ -3665,6 +3825,9 @@ mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		../../domain/recibomensualidad.h \
 		../../Impresora/receipts/reciboProductosFormatter.h \
 		../../domain/reciboProductos.h \
+		../../Impresora/receipts/CierreCajaFormatter.h \
+		../../domain/cierrecaja.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QMap \
 		/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport/QPrinter \
 		/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport/qprinter.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport/qtprintsupportglobal.h \
@@ -3793,7 +3956,6 @@ mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/QVariant \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/qvariantlist.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/qvariantmap.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtCore/QMap \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/qvector.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/qwaitcondition.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/QDeadlineTimer \

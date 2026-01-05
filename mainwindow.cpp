@@ -199,7 +199,7 @@ void MainWindow::ConectarTablas()
     ui->tW_Producto_Sel->setModel(modeloTablaProductos);
 
 }
-
+/*
 void MainWindow::imprimir(int tipoRecibo)
 {
 
@@ -226,7 +226,7 @@ void MainWindow::imprimir(int tipoRecibo)
     //printer.setPageMargins(1,1,1,1,QPrinter::Millimeter); //Modificar
     //printer.setPaperSize(tamPaper,QPrinter::Millimeter);  //Modificar
     //printDocument(&printer, tipoRecibo);
-}
+}*/
 
 void MainWindow::on_pushButtonRegistrar_clicked()//Registra una mensualidad
 {
@@ -536,9 +536,9 @@ void MainWindow::on_pushButtonEntrega_clicked()//realiza la suma del producido y
         QDateTime Entrada=query.value(0).toDateTime();
         QString HoraEntrada = Entrada.toString("yy-MM-dd hh:mm:ss");
 
-        query.exec("select Sum(Pago) from RegVehiculos where Tipo='Otro Articulo'");
+        query.exec("select Sum(Pago) from RegVehiculos where Tiempo_Total='Producto'");
         query.next();
-        int vpOtrosArticulos = query.value(0).toInt();
+        int vpProductos = query.value(0).toInt();
 
         query.exec(" select Sum(Pago) from RegVehiculos where Tiempo_Total='Mensualidad'");
         query.next();
@@ -552,15 +552,40 @@ void MainWindow::on_pushButtonEntrega_clicked()//realiza la suma del producido y
         query.next();
         int vpMotos = query.value(0).toInt()-vpMensualidad;
 
-        query.exec("select Sum(Pago) from RegVehiculos where Tipo='Carro'");
+        query.exec("select Sum(Pago) from RegVehiculos where Tipo='Moto-Lavada_1'");
         query.next();
-        int vpCarro = query.value(0).toInt();
+        int vpMotoLavada_1 = query.value(0).toInt();
 
-        query.exec("select Sum(Pago) from RegVehiculos where Tipo='Otro Pago'");
+        query.exec("select Sum(Pago) from RegVehiculos where Tipo='Moto-Lavada_2'");
         query.next();
-        int vpOtrosPagos = query.value(0).toInt();
+        int vpMotoLavada_2 = query.value(0).toInt();
+
+        query.exec("select  Count(*) from EntradaVehiculos");
+        query.next();
+        int numMotosDentro = query.value(0).toInt();
+
+        query.exec("select  Count(*) from RegVehiculos where Tipo='Moto'");
+        query.next();
+        int numMotosFuera = query.value(0).toInt();
 
 
+        cierre.fechaHora = HoraEntrada;
+        cierre.usuario = OperarioTurno;
+
+        cierre.totalEntradas = numMotosDentro;
+        cierre.totalSalidas = numMotosFuera;
+        cierre.totalMensulidadesPago = numMensualidadesPagadas;
+
+        cierre.totalesPago["Moto"] = vpMotos;
+        cierre.totalesPago["Lavada 1"] = vpMotoLavada_1;
+        cierre.totalesPago["Lavada 2"] = vpMotoLavada_2;
+        cierre.totalesPago["Mensualidad"] = vpMensualidad;
+        cierre.totalesPago["Productos"] = vpProductos;
+
+
+        pm.printCierreCaja(cierre);
+
+/*
         Tabla="RegVehiculos";
         Parametros = "Reg_Salida='"+OperarioTurno+"'";
         BorrarFilaTabla(Tabla,Parametros);
@@ -586,12 +611,14 @@ void MainWindow::on_pushButtonEntrega_clicked()//realiza la suma del producido y
         trabajador->NumMensualidadesPagadas(numMensualidadesPagadas);
         trabajador->TotalOtrosPagos(vpOtrosPagos);
         OperarioTurno="";
-        imprimir(3);//imprimir recibo de entrega
+
+        //imprimir(3);//imprimir recibo de entrega
 
         ui->actionLogin->setVisible(true);
         ui->actionEntrega->setVisible(false);
 
         //Generar Resivo De Salida Con el Valor total del Dia
+*/
 
     }
     RefrescarTablas();
@@ -606,7 +633,7 @@ void MainWindow::imprimirReciboTabla1(void)// imprime un recibo auxiliar de la t
     query.next();
     vehiculo = new Vehiculo(query.value(0).toString(),query.value(3).toString(),query.value(1).toDateTime(),query.value(2).toString());
     impCopia=true;
-    imprimir(0);
+    //imprimir(0);
     ReciboTablas->close();
 }
 
@@ -624,7 +651,7 @@ void MainWindow::imprimirReciboTabla2(void)//imprime un recibo auxiliar de la ta
     vehiculo->NomRegOut(query.value(5).toString());
     vehiculo->TiempoParqueo(query.value(7).toString());
     impCopia=true;
-    imprimir(1);
+    //imprimir(1);
 
     ReciboTablas->close();
 }
@@ -637,7 +664,7 @@ void MainWindow::imprimirReciboTablaOtros(void)//imprime un recibo auxiliar de l
     query.next();
     vehiculo = new Vehiculo(query.value(0).toString(),query.value(8).toString(),query.value(1).toDateTime(),query.value(6).toString());
     impCopia=true;
-    imprimir(0);
+    //imprimir(0);
     ReciboTablas->close();
 
 }

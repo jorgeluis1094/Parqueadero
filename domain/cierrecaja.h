@@ -1,20 +1,28 @@
 #ifndef CIERRECAJA_H
 #define CIERRECAJA_H
-
 #include <QString>
-#include <QVector>
+#include <QMap>
 
-struct ItemCierre {
-    QString concepto;
-    double valor;
+class CierreCaja {
+public:
+    QString fechaHora;
+    QString usuario;
+
+    // Totales por tipo de pago
+    QMap<QString, double> totalesPago;
+
+    // Contadores
+    int totalEntradas = 0;
+    int totalSalidas = 0;
+    int totalMensulidadesPago = 0;
+
+    double totalGeneral() const {
+        double total = 0.0;
+        for (auto it = totalesPago.begin(); it != totalesPago.end(); ++it)
+            total += it.value();
+        return total;
+    }
 };
 
-struct CierreCaja {
-    QString nombreParqueadero;
-    QString fecha;
-    QString operario;
-    QVector<ItemCierre> items;
-    double total;
-};
 
 #endif // CIERRECAJA_H
