@@ -495,7 +495,7 @@ void MainWindow::setUsuario(QString Nombre)//actualida los datos para el operari
         ui->actionEntrega->setVisible(true);
 
         query.exec("INSERT INTO Entregas"
-                   "(Operario, Entrada, Salida, Entrega)"
+                   "(Operario, Inicio, Fin, Entrega)"
                    "VALUES('"+OperarioTurno+"','"+HoraEntrada+"','NULL','NULL') ");
     }
 }
@@ -531,7 +531,7 @@ void MainWindow::on_pushButtonEntrega_clicked()//realiza la suma del producido y
         DineroTurno = dinero;
         QString HoraSalida = QDateTime::currentDateTime().toString("yy-MM-dd hh:mm:ss");
 
-        query.exec("SELECT Entrada FROM Entregas ORDER BY Entrada DESC LIMIT 1 ");
+        query.exec("SELECT Inicio FROM Entregas ORDER BY Inicio DESC LIMIT 1");
         query.next();
         QDateTime Entrada=query.value(0).toDateTime();
         QString HoraEntrada = Entrada.toString("yy-MM-dd hh:mm:ss");
@@ -585,7 +585,7 @@ void MainWindow::on_pushButtonEntrega_clicked()//realiza la suma del producido y
 
         pm.printCierreCaja(cierre);
 
-/*
+
         Tabla="RegVehiculos";
         Parametros = "Reg_Salida='"+OperarioTurno+"'";
         BorrarFilaTabla(Tabla,Parametros);
@@ -594,9 +594,9 @@ void MainWindow::on_pushButtonEntrega_clicked()//realiza la suma del producido y
         BorrarFilaTabla(Tabla,Parametros);
 
         query.exec("UPDATE Entregas SET"
-                   "Salida='"+HoraSalida+"',"
-                   "Entrega='"+QString::number(DineroTurno)+"' "
-                   "where Entrada='"+HoraEntrada+"' ");
+                   "Inicio='"+HoraSalida+"',"
+                   "Fin='"+QString::number(DineroTurno)+"' "
+                   "where Inicio='"+HoraEntrada+"' ");
 
         query.exec("Update Operarios Set Registrado = '0'");
 
@@ -605,11 +605,11 @@ void MainWindow::on_pushButtonEntrega_clicked()//realiza la suma del producido y
         trabajador->HoraSalida(HoraSalida);
         trabajador->TotalRealizado(DineroTurno);
         trabajador->TotalMotos(vpMotos);
-        trabajador->TotalCarros(vpCarro);
+        //trabajador->TotalCarros(vpCarro);
         trabajador->TotalMensualidades(vpMensualidad);
-        trabajador->TotalOtrosArticulos(vpOtrosArticulos);
+        //trabajador->TotalOtrosArticulos(vpOtrosArticulos);
         trabajador->NumMensualidadesPagadas(numMensualidadesPagadas);
-        trabajador->TotalOtrosPagos(vpOtrosPagos);
+        //trabajador->TotalOtrosPagos(vpOtrosPagos);
         OperarioTurno="";
 
         //imprimir(3);//imprimir recibo de entrega
@@ -618,7 +618,7 @@ void MainWindow::on_pushButtonEntrega_clicked()//realiza la suma del producido y
         ui->actionEntrega->setVisible(false);
 
         //Generar Resivo De Salida Con el Valor total del Dia
-*/
+
 
     }
     RefrescarTablas();
@@ -734,7 +734,7 @@ void MainWindow::on_pushButtonRegPago_clicked()//actualiza el pago de una mensua
             pm.printReciboMensualidad(structMensualidad);
 
         //Actualiza la tabla de mensualidades y la de ingreso
-        //y salida de veiculos donde se registra la placa y el pago para sumar a lo que debe entregar el operario
+        //y salida de vehiculos donde se registra la placa y el pago para sumar a lo que debe entregar el operario
            modelUno->select();
            ui->tableView->setModel(modelUno);
            modelTres->select();
