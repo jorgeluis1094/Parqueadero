@@ -56,65 +56,9 @@ MainWindow::MainWindow(QWidget *parent) :
     valorMaxPagar=query.value(1).toInt();
     valorLavada1=query.value(2).toInt();
     valorLavada2=query.value(3).toInt();
-    //valorNocheOtro=query.value(3).toInt();
 
 
-    /*
-    query.exec("SELECT * FROM TiemposLimites");
-    query.next();
-    hhUmbralD=query.value(0).toInt();
-    MMUmbralD=query.value(1).toInt();
-    ssUmbralD=0;
-
-    hhUmbralN=query.value(2).toInt();
-    MMUmbralN=query.value(3).toInt();
-    ssUmbralN=0;
-*/
-
-    QStringList rutasArchivos, cadenas;
-    rutasArchivos<<"/opt/Parqueadero/Archivos/NombreParqueadero.txt"
-                 <<"/opt/Parqueadero/Archivos/DireccionParqueadero.txt"
-                 <<"/opt/Parqueadero/Archivos/TelParqueadero.txt"
-                 <<"/opt/Parqueadero/Archivos/PropietarioParqueadero.txt"
-                 <<"/opt/Parqueadero/Archivos/NitParqueadero.txt"
-                 <<"/opt/Parqueadero/Archivos/ReglamentoParqueadero.txt"
-                 <<"/opt/Parqueadero/Imagenes/moto.png"
-                 <<"/opt/Parqueadero/Imagenes/bandera.png";
-
-    QFile file("");
-    QTextStream stream(&file);
-
-    for(int iter=0;iter<rutasArchivos.size();iter++)
-    {
-        file.setFileName(rutasArchivos.at(iter));
-        file.open(QIODevice::ReadOnly | QIODevice::Text);
-        stream.setDevice(&file);
-        cadenas<<stream.readLine();
-        file.close();
-    }
-    NombreParqueadero=cadenas.at(0);
-    direccionParqueadero=cadenas.at(1);
-    telefonoParqueadero=cadenas.at(2);
-    propietarioParqueadero=cadenas.at(3);
-    nITParquieadero=cadenas.at(4);
-
-    file.setFileName(rutasArchivos.at(5));
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    stream.setDevice(&file);
-    while (!stream.atEnd())
-    {
-       reglamentoParqueadero += stream.readLine();
-       reglamentoParqueadero +='\n';
-    }
-
-    file.close();
-    //imagenDerecha=rutasArchivos.at(6);
-    //imagenIzquierda=rutasArchivos.at(7);
-    //ui->tableInOutCar->setVisible(false);
-    //ui->tableViewOtros->setVisible(false);
-    //ui->tableViewRegVeh->setVisible(false);
     ui->dateEdit->setDate(QDate::currentDate());
-    ui->dateEdit_2->setDate(QDate::currentDate());
     impCopia=false;
 
     VecTipoVeh.push_back("Moto");
@@ -126,18 +70,8 @@ MainWindow::MainWindow(QWidget *parent) :
     // Cargar configuración de impresión
     PrintConfig::instance().load( "../../Impresora/config/" );
 
-     /*
-     *
-     *
-     *
-     *
-     */
-
 
     //ciboMensualidad structMensualidad;
-
-
-
 
 }
 
@@ -234,29 +168,36 @@ void MainWindow::on_pushButtonRegistrar_clicked()//Registra una mensualidad
     {
             QDateTime fechaActual = QDateTime();
             QSqlQuery query;
-            QString nombre,direccion, telefono, placa, fechaInicio,fechaFin, valorPago, fechapago;
+            QString nombre,direccion, telefono, placa, fechaInicio,fechaFin, valorPago, fechapago, casillero;
 
-            nombre = ui->lineEditNombre->text();
-            direccion = ui->lineEditDireccion->text();
-            telefono = ui->lineEditTelefono->text();
-            placa = ui->lineEditPlaca->text().toUpper();
+            nombre = ui->lineEditNombreMensual->text();
+            direccion = ui->lineEditDireccionMensual->text();
+            telefono = ui->lineEditTelefonoMensual->text();
+            placa = ui->lineEditPlacaMensual->text().toUpper();
             fechaInicio = ui->dateEdit->text();
-            fechaFin = ui->dateEdit_2->text();
-            valorPago = ui->lineEditPago->text();
+            //fechaFin = ui->dateEdit_2->text();
+            valorPago = ui->lineEditPagoMensual->text();
             fechapago = fechaActual.currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+            casillero = ui->leCasilleroMensual->text();
 
             if(!nombre.isEmpty() && !placa.isEmpty() && !valorPago.isEmpty() )
             {
+
+                qDebug()<<"INSERT INTO Mensualidades "
+                               "(Placa, Casillero, Nombre, Telefono, Direccion, Inicio, Fin, Fecha_Pago, Valor, Registro)"
+                               "VALUES ( '"+placa+"' , '"+casillero+"' , '"+nombre+"' , '"+telefono+"' , '"+direccion+"' , '"+fechaInicio+"' , datetime('" + fechaInicio + "', '+30 days') , strftime('%Y-%m-%d %H:%M:%S', 'now','localtime') , '"+valorPago+"', '"+OperarioTurno+"')";
+
+
                     query.exec("INSERT INTO Mensualidades "
-                               "(Placa, Nombre, Telefono, Direccion, Inicio, Fin, Fecha_Pago, Valor, Registro)"
-                               "VALUES ( '"+placa+"' , '"+nombre+"' , '"+telefono+"' , '"+direccion+"' , '"+fechaInicio+"' , '"+fechaFin+"' , '"+fechapago+"','"+valorPago+"', '"+OperarioTurno+"')");
+                               "(Placa, Casillero, Nombre, Telefono, Direccion, Inicio, Fin, Fecha_Pago, Valor, Registro)"
+                               "VALUES ( '"+placa+"' , '"+casillero+"' , '"+nombre+"' , '"+telefono+"' , '"+direccion+"' , '"+fechaInicio+"' , date('" + fechaInicio + "', '+1 month') , strftime('%Y-%m-%d %H:%M:%S', 'now','localtime') , '"+valorPago+"', '"+OperarioTurno+"')");
 
                     query.exec("INSERT INTO RegVehiculos"
                             "(Placa,Entrada,Salida,Pago,Reg_Ingreso, Reg_Salida, Tipo,Tiempo_Total)"
-                               "VALUES ( '"+placa+"' , '"+fechapago+"' , '"+fechapago+"' , '"+valorPago+"' , '"+OperarioTurno+"', '"+OperarioTurno+"', 'Moto','Mensualidad')");
+                               "VALUES ( '"+placa+"' , strftime('%Y-%m-%d %H:%M:%S', 'now','localtime') , strftime('%Y-%m-%d %H:%M:%S', 'now','localtime') , '"+valorPago+"' , '"+OperarioTurno+"', '"+OperarioTurno+"', 'Moto','Mensualidad')");
 
                     vehiculo = new Vehiculo(placa,"Moto",ui->dateEdit->dateTime(),OperarioTurno);
-                    vehiculo->HoraSalida(ui->dateEdit_2->dateTime());
+                    //vehiculo->HoraSalida(ui->dateEdit_2->dateTime());
                     vehiculo->ValorPagado(valorPago.toInt());
                     vehiculo->NomRegOut(OperarioTurno);
                     vehiculo->TipoVehiculo("Moto");
@@ -268,7 +209,7 @@ void MainWindow::on_pushButtonRegistrar_clicked()//Registra una mensualidad
                     structMensualidad.placa = placa;
                     structMensualidad.fechaPago = fechapago;
                     structMensualidad.inicioMensualidad = fechaInicio.mid(0,10);
-                    structMensualidad.finMensualidad = fechaFin.mid(0,10);
+                    structMensualidad.finMensualidad = QDate::fromString(fechaInicio, "yyyy-MM-dd").addMonths(1).toString();//;fechaFin.mid(0,10);
                     structMensualidad.tipoVehiculo = "Moto";
                     structMensualidad.pagoRecibido = valorPago;
                     structMensualidad.operarioParqueadero = OperarioTurno;
@@ -500,7 +441,6 @@ void MainWindow::setUsuario(QString Nombre)//actualida los datos para el operari
     }
 }
 
-
 void MainWindow::on_pushButtonEntrega_clicked()//realiza la suma del producido y genera el recibo
 {
     QSqlQuery query;
@@ -569,22 +509,21 @@ void MainWindow::on_pushButtonEntrega_clicked()//realiza la suma del producido y
         int numMotosFuera = query.value(0).toInt();
 
 
-        cierre.fechaHora = HoraEntrada;
+        cierre.fechaHoraInicio = HoraEntrada;
+        cierre.fechaHoraFin = HoraSalida;
         cierre.usuario = OperarioTurno;
 
         cierre.totalEntradas = numMotosDentro;
         cierre.totalSalidas = numMotosFuera;
         cierre.totalMensulidadesPago = numMensualidadesPagadas;
 
-        cierre.totalesPago["Moto"] = vpMotos;
-        cierre.totalesPago["Lavada 1"] = vpMotoLavada_1;
-        cierre.totalesPago["Lavada 2"] = vpMotoLavada_2;
-        cierre.totalesPago["Mensualidad"] = vpMensualidad;
-        cierre.totalesPago["Productos"] = vpProductos;
-
+        cierre.totalesPago["Moto        "] = vpMotos;
+        cierre.totalesPago["Lavada 1    "] = vpMotoLavada_1;
+        cierre.totalesPago["Lavada 2    "] = vpMotoLavada_2;
+        cierre.totalesPago["Mensualidad "] = vpMensualidad;
+        cierre.totalesPago["Productos   "] = vpProductos;
 
         pm.printCierreCaja(cierre);
-
 
         Tabla="RegVehiculos";
         Parametros = "Reg_Salida='"+OperarioTurno+"'";
@@ -593,12 +532,12 @@ void MainWindow::on_pushButtonEntrega_clicked()//realiza la suma del producido y
         Tabla = "TablaOtrosVeh";
         BorrarFilaTabla(Tabla,Parametros);
 
-        query.exec("UPDATE Entregas SET"
-                   "Inicio='"+HoraSalida+"',"
-                   "Fin='"+QString::number(DineroTurno)+"' "
-                   "where Inicio='"+HoraEntrada+"' ");
+        query.exec("UPDATE Entregas SET "
+                   "Fin='20"+HoraSalida+"', "
+                   "Entrega='"+QString::number(vpMotos+vpMotoLavada_1+vpMotoLavada_2+vpMensualidad+vpProductos)+"' "
+                   "where Inicio='20"+HoraEntrada+"' ");
 
-        query.exec("Update Operarios Set Registrado = '0'");
+        query.exec("UPDATE Operarios SET Registrado = '0'");
 
         trabajador=new Operario(OperarioTurno);
         trabajador->HoraEntrada(HoraEntrada);
@@ -656,33 +595,6 @@ void MainWindow::imprimirReciboTabla2(void)//imprime un recibo auxiliar de la ta
     ReciboTablas->close();
 }
 
-void MainWindow::imprimirReciboTablaOtros(void)//imprime un recibo auxiliar de la tabla de Otras Cosas
-{
-    QSqlQuery query;
-    QString Placa= lineEditsRE->text();
-    query.exec("SELECT * FROM TablaOtrosVeh WHERE `Propietario del Articulo`='"+Placa+"' ");
-    query.next();
-    vehiculo = new Vehiculo(query.value(0).toString(),query.value(8).toString(),query.value(1).toDateTime(),query.value(6).toString());
-    impCopia=true;
-    //imprimir(0);
-    ReciboTablas->close();
-
-}
-
-void MainWindow::on_lineEditRegPago_editingFinished()//busca y muestra en tabla los usuarios registrados en mensalidad
-{
-
-    QString PlacaPago="";
-    QSqlQueryModel *modelCuatro= new QSqlQueryModel;
-
-    ui->tableViewRegPago->setModel(modelCuatro);
-    PlacaPago=ui->lineEditRegPago->text().toUpper();
-
-    modelCuatro->setQuery("SELECT * FROM Mensualidades WHERE Placa ='"+PlacaPago+"' ");
-    ui->tableViewRegPago->setModel(modelCuatro);
-}
-
-
 void MainWindow::on_pushButtonRegPago_clicked()//actualiza el pago de una mensualidad
 {
     if(OperarioTurno != "" && !ui->lineEditRegPagoPlata->text().isEmpty() && ui->lineEditRegPagoPlata->text().toInt()>0){
@@ -699,23 +611,23 @@ void MainWindow::on_pushButtonRegPago_clicked()//actualiza el pago de una mensua
             query.exec("UPDATE Mensualidades SET "
                        "Inicio=DATE(Fin,'+1 days'), "
                        "Fin=DATE(Fin,'+"+diasPagados+" days'), "
-                       "Fecha_Pago=strftime('%Y-%m-%d %H:%M:%S', 'now'), "
+                       "Fecha_Pago=strftime('%Y-%m-%d %H:%M:%S', 'now','localtime'), "
                        "Registro='"+OperarioTurno+"', "
                        "Valor='"+ui->lineEditRegPagoPlata->text().toUpper()+"' "
                        "WHERE "
                        "Placa='"+placa+"' ");
 
-        //Inbresa el dinero recibido en la tabla de registro de salida donde estan los datos que se sumaran
+        //Ingresa el dinero recibido en la tabla de registro de salida donde estan los datos que se sumaran
 
             query.exec("INSERT INTO RegVehiculos"
                 "(Placa,Entrada,Salida,Pago,Reg_Ingreso, Reg_Salida, Tipo,Tiempo_Total)"
-                   "VALUES ( '"+placa+"', strftime('%Y-%m-%d %H:%M:%S', 'now'), strftime('%Y-%m-%d %H:%M:%S', 'now') , '"+ui->lineEditRegPagoPlata->text()+"', '"+OperarioTurno+"', '"+OperarioTurno+"', 'Moto','Mensualidad')");
+                   "VALUES ( '"+placa+"', strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime'), strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime') , '"+ui->lineEditRegPagoPlata->text()+"', '"+OperarioTurno+"', '"+OperarioTurno+"', 'Moto','Mensualidad')");
 
-            QString consulta =  "SELECT Placa, Nombre, Valor, Inicio, Fin, Registro FROM Mensualidades WHERE "
+          /*  QString consulta =  "SELECT Placa, Nombre, Valor, Inicio, Fin, Registro FROM Mensualidades WHERE "
                                 "Nombre='"+ui->lineEditRegPago->text()+"' OR "
                                 "Placa='"+ui->lineEditRegPago->text().toUpper()+"' ";
 
-
+*/
 
             query.exec("SELECT Placa, Nombre, Valor, Inicio, Fin, Registro FROM Mensualidades WHERE "
                        "Nombre='"+ui->lineEditRegPago->text()+"' OR "
@@ -746,6 +658,7 @@ void MainWindow::on_pushButtonRegPago_clicked()//actualiza el pago de una mensua
             ui->lineEditRegPagoPlata->clear();
             ui->lineEditRegPago->clear();
             ui->lineEditDiasPagados->clear();
+
     }
     else
     {
@@ -794,12 +707,13 @@ void MainWindow::RefrescarTablas()//actualiza las tablas y borra los lineEdit
     //ui->tableViewOtros->setModel(modeloTablaOtros);
 
 
-    ui->lineEditNombre->clear();
-    ui->lineEditDireccion->clear();
-    ui->lineEditTelefono->clear();
-    ui->lineEditPlaca->clear();
-    ui->lineEditPago->clear();
+    ui->lineEditNombreMensual->clear();
+    ui->lineEditDireccionMensual->clear();
+    ui->lineEditTelefonoMensual->clear();
+    ui->lineEditPlacaMensual->clear();
+    ui->lineEditPagoMensual->clear();
     ui->lineEditRegInOut->clear();
+    ui->leCasilleroMensual->clear();
     //ui->lineEditRecibeCantidad->clear();
     //ui->lineEditrecibeDe->clear();
     //ui->lineEditOtrosVeh->clear();
@@ -809,29 +723,32 @@ void MainWindow::RefrescarTablas()//actualiza las tablas y borra los lineEdit
 void MainWindow::on_tableInOutCar_doubleClicked(const QModelIndex &index)//opciones para imprimir cópia de recibo
 {
 
-    ReciboTablas = new QDialog(this);
-    ReciboTablas->setWindowTitle("Imprimir Recibo");
-    ReciboTablas->resize(450,200);
+    if (index.column() == 0) {
+        ReciboTablas = new QDialog(this);
+        ReciboTablas->setWindowTitle("Imprimir Recibo");
+        ReciboTablas->resize(400,150);
 
 
-    QLabel *labelPlaca = new QLabel("Ingrese La Placa", ReciboTablas);
-    labelPlaca->setGeometry(100,10,250,20);
-    lineEditsRE = new QLineEdit(ReciboTablas);
-    lineEditsRE->setGeometry(100,30,250,30);
+        QLabel *labelPlaca = new QLabel("Placa", ReciboTablas);
+        labelPlaca->setGeometry(75,10,250,20);
+        lineEditsRE = new QLineEdit(ReciboTablas);
+        lineEditsRE->setGeometry(75,30,250,30);
+        lineEditsRE->setText(index.data().toString());
 
-    QPushButton *buttonT1 = new QPushButton("Tabla de Registros Entrada:",ReciboTablas);
-    buttonT1->setGeometry(100,70,250,30);
+        QPushButton *buttonT1 = new QPushButton("Tabla de Registros Entrada:",ReciboTablas);
+        buttonT1->setGeometry(75,70,250,30);
 
-    QPushButton *buttonT2 = new QPushButton("Tabla de Registros Salida:",ReciboTablas);
-    buttonT2->setGeometry(100,110,250,30);
+        QPushButton *buttonT2 = new QPushButton("Tabla de Registros Salida:",ReciboTablas);
+        buttonT2->setGeometry(75,110,250,30);
 
-    QPushButton *buttonT3 = new QPushButton("Tabla de Otros Articulos:",ReciboTablas);
-    buttonT3->setGeometry(100,150,250,30);
+        //QPushButton *buttonT3 = new QPushButton("Tabla de Otros Articulos:",ReciboTablas);
+        //buttonT3->setGeometry(100,150,250,30);
 
-    QObject::connect(buttonT1, SIGNAL(clicked()),this, SLOT(imprimirReciboTabla1()));
-    QObject::connect(buttonT2, SIGNAL(clicked()),this,SLOT(imprimirReciboTabla2()));
-    QObject::connect(buttonT3, SIGNAL(clicked()),this,SLOT(imprimirReciboTablaOtros()));
-    ReciboTablas->show();
+        QObject::connect(buttonT1, SIGNAL(clicked()),this, SLOT(imprimirReciboTabla1()));
+        QObject::connect(buttonT2, SIGNAL(clicked()),this,SLOT(imprimirReciboTabla2()));
+        //QObject::connect(buttonT3, SIGNAL(clicked()),this,SLOT(imprimirReciboTablaOtros()));
+        ReciboTablas->show();
+    }
 
 }
 
@@ -916,8 +833,6 @@ void MainWindow::on_pB_VentaOtroProducto_clicked()
             query.exec(consultaSQL);
             query.next();
 
-
-
             //Inserta en la tabla de ventas para sumar total
             consultaSQL = "INSERT INTO RegVehiculos "
                           "(Placa, Entrada, Salida, Pago, Reg_Ingreso, Reg_Salida, Tipo, Tiempo_Total) "
@@ -952,12 +867,12 @@ void MainWindow::on_pB_VentaOtroProducto_clicked()
 }
 
 
-void MainWindow::on_lineEditFiltarmensualidad_textChanged(const QString &arg1)
+void MainWindow::on_lineEditRegPago_textChanged(const QString &arg1)
 {
+
     QSqlQueryModel *modelCuatro= new QSqlQueryModel;
 
-
-    modelCuatro->setQuery("SELECT * FROM Mensualidades WHERE Placa='"+ui->lineEditRegPago->text().toUpper()+"' ");
+    modelCuatro->setQuery("SELECT * FROM Mensualidades WHERE Placa LIKE '"+arg1.toUpper()+"%' ");
     ui->tableViewRegPago->setModel(modelCuatro);
 }
 

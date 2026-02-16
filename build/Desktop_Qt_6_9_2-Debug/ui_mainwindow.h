@@ -16,6 +16,8 @@
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QDateEdit>
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
@@ -63,27 +65,29 @@ public:
     QRadioButton *rB_Normal;
     QRadioButton *rB_Lavada1;
     QRadioButton *rB_Lavada2;
+    QSpacerItem *verticalSpacer_6;
     QVBoxLayout *verticalLayout_3;
     relojdigital *lcdNumber;
+    QFrame *line;
     QVBoxLayout *verticalLayout_9;
     QCheckBox *cbRegEntrada;
     QTableView *tableInOutCar;
     QVBoxLayout *verticalLayout_13;
     QCheckBox *cbRegSalida;
     QTableView *tableViewRegVeh;
-    QSpacerItem *verticalSpacer_2;
     QWidget *tab_2;
     QHBoxLayout *horizontalLayout_3;
     QTabWidget *tabWidgetRegPago;
     QWidget *tab_6;
     QVBoxLayout *verticalLayout_15;
-    QSpacerItem *verticalSpacer_5;
     QHBoxLayout *horizontalLayout_9;
     QVBoxLayout *verticalLayout_10;
     QLabel *label_10;
     QLineEdit *lineEditRegPago;
     QSpacerItem *horizontalSpacer_4;
+    QFrame *line_5;
     QTableView *tableViewRegPago;
+    QFrame *line_6;
     QHBoxLayout *horizontalLayout_21;
     QVBoxLayout *verticalLayout_11;
     QLabel *label_12;
@@ -97,34 +101,42 @@ public:
     QSpacerItem *horizontalSpacer_10;
     QPushButton *pushButtonRegPago;
     QWidget *tab_3;
-    QVBoxLayout *verticalLayout_5;
+    QVBoxLayout *verticalLayout;
+    QFrame *line_4;
+    QHBoxLayout *horizontalLayout_16;
+    QGroupBox *groupBox_2;
     QVBoxLayout *verticalLayout_8;
-    QHBoxLayout *horizontalLayout_2;
-    QLabel *label_2;
-    QLineEdit *lineEditNombre;
     QHBoxLayout *horizontalLayout_6;
     QLabel *label_5;
-    QLineEdit *lineEditPlaca;
+    QLineEdit *lineEditPlacaMensual;
+    QHBoxLayout *horizontalLayout_11;
+    QLabel *label;
+    QLineEdit *leCasilleroMensual;
+    QHBoxLayout *horizontalLayout_15;
+    QLabel *label_6;
+    QLineEdit *lineEditPagoMensual;
+    QFrame *line_2;
+    QGroupBox *groupBox;
+    QVBoxLayout *verticalLayout_5;
     QHBoxLayout *horizontalLayout_5;
-    QLabel *label_4;
-    QLineEdit *lineEditTelefono;
+    QLabel *label_2;
+    QLineEdit *lineEditNombreMensual;
     QHBoxLayout *horizontalLayout_4;
     QLabel *label_3;
-    QLineEdit *lineEditDireccion;
-    QHBoxLayout *horizontalLayout_20;
-    QLabel *label_6;
-    QLineEdit *lineEditPago;
-    QHBoxLayout *horizontalLayout_10;
-    QVBoxLayout *verticalLayout;
+    QLineEdit *lineEditDireccionMensual;
+    QHBoxLayout *horizontalLayout_2;
+    QLabel *label_4;
+    QLineEdit *lineEditTelefonoMensual;
+    QFrame *line_3;
     QLabel *labelFechaInicio;
+    QHBoxLayout *horizontalLayout_10;
+    QSpacerItem *horizontalSpacer_6;
     QDateEdit *dateEdit;
-    QVBoxLayout *verticalLayout_2;
-    QLabel *labelFechaFin;
-    QDateEdit *dateEdit_2;
+    QSpacerItem *horizontalSpacer_5;
+    QSpacerItem *verticalSpacer;
     QHBoxLayout *horizontalLayout_8;
     QSpacerItem *horizontalSpacer_2;
     QPushButton *pushButtonRegistrar;
-    QSpacerItem *verticalSpacer;
     QWidget *tab_4;
     QVBoxLayout *verticalLayout_21;
     QHBoxLayout *horizontalLayout_7;
@@ -154,8 +166,8 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName("MainWindow");
-        MainWindow->setWindowModality(Qt::ApplicationModal);
-        MainWindow->resize(657, 593);
+        MainWindow->setWindowModality(Qt::WindowModality::ApplicationModal);
+        MainWindow->resize(786, 620);
         QSizePolicy sizePolicy(QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Minimum);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -168,7 +180,7 @@ public:
         font.setItalic(false);
         font.setStyleStrategy(QFont::PreferAntialias);
         MainWindow->setFont(font);
-        MainWindow->setFocusPolicy(Qt::NoFocus);
+        MainWindow->setFocusPolicy(Qt::FocusPolicy::NoFocus);
         actionGuardar = new QAction(MainWindow);
         actionGuardar->setObjectName("actionGuardar");
         actionGuardar_2 = new QAction(MainWindow);
@@ -251,9 +263,9 @@ public:
         font2.setItalic(false);
         font2.setStyleStrategy(QFont::PreferAntialias);
         lineEditRegInOut->setFont(font2);
-        lineEditRegInOut->setInputMethodHints(Qt::ImhUppercaseOnly);
+        lineEditRegInOut->setInputMethodHints(Qt::InputMethodHint::ImhUppercaseOnly);
         lineEditRegInOut->setMaxLength(12694);
-        lineEditRegInOut->setEchoMode(QLineEdit::Normal);
+        lineEditRegInOut->setEchoMode(QLineEdit::EchoMode::Normal);
 
         horizontalLayout_22->addWidget(lineEditRegInOut);
 
@@ -298,6 +310,10 @@ public:
 
         verticalLayout_12->addWidget(rB_Lavada2);
 
+        verticalSpacer_6 = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
+
+        verticalLayout_12->addItem(verticalSpacer_6);
+
 
         horizontalLayout_13->addLayout(verticalLayout_12);
 
@@ -316,6 +332,13 @@ public:
 
 
         verticalLayout_4->addLayout(horizontalLayout_13);
+
+        line = new QFrame(Ingreso);
+        line->setObjectName("line");
+        line->setFrameShape(QFrame::Shape::HLine);
+        line->setFrameShadow(QFrame::Shadow::Sunken);
+
+        verticalLayout_4->addWidget(line);
 
 
         horizontalLayout_14->addLayout(verticalLayout_4);
@@ -337,10 +360,10 @@ public:
         tableInOutCar->setEnabled(true);
         sizePolicy2.setHeightForWidth(tableInOutCar->sizePolicy().hasHeightForWidth());
         tableInOutCar->setSizePolicy(sizePolicy2);
-        tableInOutCar->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        tableInOutCar->setEditTriggers(QAbstractItemView::EditTrigger::NoEditTriggers);
         tableInOutCar->setDragEnabled(false);
         tableInOutCar->setShowGrid(true);
-        tableInOutCar->setGridStyle(Qt::SolidLine);
+        tableInOutCar->setGridStyle(Qt::PenStyle::SolidLine);
         tableInOutCar->setSortingEnabled(false);
         tableInOutCar->horizontalHeader()->setDefaultSectionSize(160);
 
@@ -362,7 +385,7 @@ public:
         tableViewRegVeh->setObjectName("tableViewRegVeh");
         sizePolicy2.setHeightForWidth(tableViewRegVeh->sizePolicy().hasHeightForWidth());
         tableViewRegVeh->setSizePolicy(sizePolicy2);
-        tableViewRegVeh->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        tableViewRegVeh->setEditTriggers(QAbstractItemView::EditTrigger::NoEditTriggers);
         tableViewRegVeh->horizontalHeader()->setCascadingSectionResizes(false);
         tableViewRegVeh->horizontalHeader()->setDefaultSectionSize(160);
 
@@ -370,10 +393,6 @@ public:
 
 
         verticalLayout_14->addLayout(verticalLayout_13);
-
-        verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
-
-        verticalLayout_14->addItem(verticalSpacer_2);
 
         tabWidget->addTab(Ingreso, QString());
         tab_2 = new QWidget();
@@ -384,6 +403,7 @@ public:
         horizontalLayout_3->setObjectName("horizontalLayout_3");
         tabWidgetRegPago = new QTabWidget(tab_2);
         tabWidgetRegPago->setObjectName("tabWidgetRegPago");
+        tabWidgetRegPago->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
         tabWidgetRegPago->setAutoFillBackground(false);
         tab_6 = new QWidget();
         tab_6->setObjectName("tab_6");
@@ -391,10 +411,6 @@ public:
         verticalLayout_15->setSpacing(6);
         verticalLayout_15->setContentsMargins(11, 11, 11, 11);
         verticalLayout_15->setObjectName("verticalLayout_15");
-        verticalSpacer_5 = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
-
-        verticalLayout_15->addItem(verticalSpacer_5);
-
         horizontalLayout_9 = new QHBoxLayout();
         horizontalLayout_9->setSpacing(6);
         horizontalLayout_9->setObjectName("horizontalLayout_9");
@@ -408,8 +424,11 @@ public:
 
         lineEditRegPago = new QLineEdit(tab_6);
         lineEditRegPago->setObjectName("lineEditRegPago");
-        sizePolicy2.setHeightForWidth(lineEditRegPago->sizePolicy().hasHeightForWidth());
-        lineEditRegPago->setSizePolicy(sizePolicy2);
+        QSizePolicy sizePolicy4(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+        sizePolicy4.setHorizontalStretch(0);
+        sizePolicy4.setVerticalStretch(0);
+        sizePolicy4.setHeightForWidth(lineEditRegPago->sizePolicy().hasHeightForWidth());
+        lineEditRegPago->setSizePolicy(sizePolicy4);
         lineEditRegPago->setMinimumSize(QSize(120, 0));
 
         verticalLayout_10->addWidget(lineEditRegPago);
@@ -424,12 +443,26 @@ public:
 
         verticalLayout_15->addLayout(horizontalLayout_9);
 
+        line_5 = new QFrame(tab_6);
+        line_5->setObjectName("line_5");
+        line_5->setFrameShape(QFrame::Shape::HLine);
+        line_5->setFrameShadow(QFrame::Shadow::Sunken);
+
+        verticalLayout_15->addWidget(line_5);
+
         tableViewRegPago = new QTableView(tab_6);
         tableViewRegPago->setObjectName("tableViewRegPago");
-        tableViewRegPago->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        tableViewRegPago->setEditTriggers(QAbstractItemView::EditTrigger::NoEditTriggers);
         tableViewRegPago->horizontalHeader()->setDefaultSectionSize(160);
 
         verticalLayout_15->addWidget(tableViewRegPago);
+
+        line_6 = new QFrame(tab_6);
+        line_6->setObjectName("line_6");
+        line_6->setFrameShape(QFrame::Shape::HLine);
+        line_6->setFrameShadow(QFrame::Shadow::Sunken);
+
+        verticalLayout_15->addWidget(line_6);
 
         horizontalLayout_21 = new QHBoxLayout();
         horizontalLayout_21->setSpacing(6);
@@ -495,146 +528,198 @@ public:
         tabWidgetRegPago->addTab(tab_6, QString());
         tab_3 = new QWidget();
         tab_3->setObjectName("tab_3");
-        verticalLayout_5 = new QVBoxLayout(tab_3);
-        verticalLayout_5->setSpacing(6);
-        verticalLayout_5->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_5->setObjectName("verticalLayout_5");
-        verticalLayout_8 = new QVBoxLayout();
+        verticalLayout = new QVBoxLayout(tab_3);
+        verticalLayout->setSpacing(6);
+        verticalLayout->setContentsMargins(11, 11, 11, 11);
+        verticalLayout->setObjectName("verticalLayout");
+        line_4 = new QFrame(tab_3);
+        line_4->setObjectName("line_4");
+        line_4->setFrameShape(QFrame::Shape::HLine);
+        line_4->setFrameShadow(QFrame::Shadow::Sunken);
+
+        verticalLayout->addWidget(line_4);
+
+        horizontalLayout_16 = new QHBoxLayout();
+        horizontalLayout_16->setSpacing(6);
+        horizontalLayout_16->setObjectName("horizontalLayout_16");
+        groupBox_2 = new QGroupBox(tab_3);
+        groupBox_2->setObjectName("groupBox_2");
+        groupBox_2->setAlignment(Qt::AlignmentFlag::AlignCenter);
+        verticalLayout_8 = new QVBoxLayout(groupBox_2);
         verticalLayout_8->setSpacing(6);
+        verticalLayout_8->setContentsMargins(11, 11, 11, 11);
         verticalLayout_8->setObjectName("verticalLayout_8");
-        horizontalLayout_2 = new QHBoxLayout();
-        horizontalLayout_2->setSpacing(6);
-        horizontalLayout_2->setObjectName("horizontalLayout_2");
-        label_2 = new QLabel(tab_3);
-        label_2->setObjectName("label_2");
-
-        horizontalLayout_2->addWidget(label_2);
-
-        lineEditNombre = new QLineEdit(tab_3);
-        lineEditNombre->setObjectName("lineEditNombre");
-
-        horizontalLayout_2->addWidget(lineEditNombre);
-
         horizontalLayout_6 = new QHBoxLayout();
         horizontalLayout_6->setSpacing(6);
         horizontalLayout_6->setObjectName("horizontalLayout_6");
-        label_5 = new QLabel(tab_3);
+        label_5 = new QLabel(groupBox_2);
         label_5->setObjectName("label_5");
 
         horizontalLayout_6->addWidget(label_5);
 
-        lineEditPlaca = new QLineEdit(tab_3);
-        lineEditPlaca->setObjectName("lineEditPlaca");
+        lineEditPlacaMensual = new QLineEdit(groupBox_2);
+        lineEditPlacaMensual->setObjectName("lineEditPlacaMensual");
 
-        horizontalLayout_6->addWidget(lineEditPlaca);
-
-
-        horizontalLayout_2->addLayout(horizontalLayout_6);
+        horizontalLayout_6->addWidget(lineEditPlacaMensual);
 
 
-        verticalLayout_8->addLayout(horizontalLayout_2);
+        verticalLayout_8->addLayout(horizontalLayout_6);
 
+        horizontalLayout_11 = new QHBoxLayout();
+        horizontalLayout_11->setSpacing(6);
+        horizontalLayout_11->setObjectName("horizontalLayout_11");
+        label = new QLabel(groupBox_2);
+        label->setObjectName("label");
+
+        horizontalLayout_11->addWidget(label);
+
+        leCasilleroMensual = new QLineEdit(groupBox_2);
+        leCasilleroMensual->setObjectName("leCasilleroMensual");
+
+        horizontalLayout_11->addWidget(leCasilleroMensual);
+
+
+        verticalLayout_8->addLayout(horizontalLayout_11);
+
+        horizontalLayout_15 = new QHBoxLayout();
+        horizontalLayout_15->setSpacing(6);
+        horizontalLayout_15->setObjectName("horizontalLayout_15");
+        label_6 = new QLabel(groupBox_2);
+        label_6->setObjectName("label_6");
+
+        horizontalLayout_15->addWidget(label_6);
+
+        lineEditPagoMensual = new QLineEdit(groupBox_2);
+        lineEditPagoMensual->setObjectName("lineEditPagoMensual");
+
+        horizontalLayout_15->addWidget(lineEditPagoMensual);
+
+
+        verticalLayout_8->addLayout(horizontalLayout_15);
+
+
+        horizontalLayout_16->addWidget(groupBox_2);
+
+        line_2 = new QFrame(tab_3);
+        line_2->setObjectName("line_2");
+        line_2->setFrameShape(QFrame::Shape::VLine);
+        line_2->setFrameShadow(QFrame::Shadow::Sunken);
+
+        horizontalLayout_16->addWidget(line_2);
+
+        groupBox = new QGroupBox(tab_3);
+        groupBox->setObjectName("groupBox");
+        groupBox->setAlignment(Qt::AlignmentFlag::AlignCenter);
+        verticalLayout_5 = new QVBoxLayout(groupBox);
+        verticalLayout_5->setSpacing(6);
+        verticalLayout_5->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_5->setObjectName("verticalLayout_5");
         horizontalLayout_5 = new QHBoxLayout();
         horizontalLayout_5->setSpacing(6);
         horizontalLayout_5->setObjectName("horizontalLayout_5");
-        label_4 = new QLabel(tab_3);
-        label_4->setObjectName("label_4");
+        label_2 = new QLabel(groupBox);
+        label_2->setObjectName("label_2");
 
-        horizontalLayout_5->addWidget(label_4);
+        horizontalLayout_5->addWidget(label_2);
 
-        lineEditTelefono = new QLineEdit(tab_3);
-        lineEditTelefono->setObjectName("lineEditTelefono");
+        lineEditNombreMensual = new QLineEdit(groupBox);
+        lineEditNombreMensual->setObjectName("lineEditNombreMensual");
 
-        horizontalLayout_5->addWidget(lineEditTelefono);
+        horizontalLayout_5->addWidget(lineEditNombreMensual);
+
+
+        verticalLayout_5->addLayout(horizontalLayout_5);
 
         horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setSpacing(6);
         horizontalLayout_4->setObjectName("horizontalLayout_4");
-        label_3 = new QLabel(tab_3);
+        label_3 = new QLabel(groupBox);
         label_3->setObjectName("label_3");
 
         horizontalLayout_4->addWidget(label_3);
 
-        lineEditDireccion = new QLineEdit(tab_3);
-        lineEditDireccion->setObjectName("lineEditDireccion");
+        lineEditDireccionMensual = new QLineEdit(groupBox);
+        lineEditDireccionMensual->setObjectName("lineEditDireccionMensual");
 
-        horizontalLayout_4->addWidget(lineEditDireccion);
-
-
-        horizontalLayout_5->addLayout(horizontalLayout_4);
+        horizontalLayout_4->addWidget(lineEditDireccionMensual);
 
 
-        verticalLayout_8->addLayout(horizontalLayout_5);
+        verticalLayout_5->addLayout(horizontalLayout_4);
 
-        horizontalLayout_20 = new QHBoxLayout();
-        horizontalLayout_20->setSpacing(6);
-        horizontalLayout_20->setObjectName("horizontalLayout_20");
-        label_6 = new QLabel(tab_3);
-        label_6->setObjectName("label_6");
+        horizontalLayout_2 = new QHBoxLayout();
+        horizontalLayout_2->setSpacing(6);
+        horizontalLayout_2->setObjectName("horizontalLayout_2");
+        label_4 = new QLabel(groupBox);
+        label_4->setObjectName("label_4");
 
-        horizontalLayout_20->addWidget(label_6);
+        horizontalLayout_2->addWidget(label_4);
 
-        lineEditPago = new QLineEdit(tab_3);
-        lineEditPago->setObjectName("lineEditPago");
+        lineEditTelefonoMensual = new QLineEdit(groupBox);
+        lineEditTelefonoMensual->setObjectName("lineEditTelefonoMensual");
 
-        horizontalLayout_20->addWidget(lineEditPago);
-
-
-        verticalLayout_8->addLayout(horizontalLayout_20);
+        horizontalLayout_2->addWidget(lineEditTelefonoMensual);
 
 
-        verticalLayout_5->addLayout(verticalLayout_8);
+        verticalLayout_5->addLayout(horizontalLayout_2);
+
+
+        horizontalLayout_16->addWidget(groupBox);
+
+
+        verticalLayout->addLayout(horizontalLayout_16);
+
+        line_3 = new QFrame(tab_3);
+        line_3->setObjectName("line_3");
+        line_3->setFrameShape(QFrame::Shape::HLine);
+        line_3->setFrameShadow(QFrame::Shadow::Sunken);
+
+        verticalLayout->addWidget(line_3);
+
+        labelFechaInicio = new QLabel(tab_3);
+        labelFechaInicio->setObjectName("labelFechaInicio");
+        QFont font3;
+        font3.setFamilies({QString::fromUtf8("Liberation Serif")});
+        font3.setPointSize(14);
+        font3.setBold(false);
+        font3.setItalic(false);
+        font3.setStyleStrategy(QFont::PreferAntialias);
+        font3.setHintingPreference(QFont::PreferVerticalHinting);
+        labelFechaInicio->setFont(font3);
+        labelFechaInicio->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
+        labelFechaInicio->setAutoFillBackground(false);
+        labelFechaInicio->setAlignment(Qt::AlignmentFlag::AlignCenter);
+
+        verticalLayout->addWidget(labelFechaInicio);
 
         horizontalLayout_10 = new QHBoxLayout();
         horizontalLayout_10->setSpacing(6);
         horizontalLayout_10->setObjectName("horizontalLayout_10");
-        verticalLayout = new QVBoxLayout();
-        verticalLayout->setSpacing(6);
-        verticalLayout->setObjectName("verticalLayout");
-        labelFechaInicio = new QLabel(tab_3);
-        labelFechaInicio->setObjectName("labelFechaInicio");
+        horizontalSpacer_6 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
-        verticalLayout->addWidget(labelFechaInicio);
+        horizontalLayout_10->addItem(horizontalSpacer_6);
 
         dateEdit = new QDateEdit(tab_3);
         dateEdit->setObjectName("dateEdit");
-        QSizePolicy sizePolicy4(QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
-        sizePolicy4.setHorizontalStretch(0);
-        sizePolicy4.setVerticalStretch(0);
-        sizePolicy4.setHeightForWidth(dateEdit->sizePolicy().hasHeightForWidth());
-        dateEdit->setSizePolicy(sizePolicy4);
+        sizePolicy.setHeightForWidth(dateEdit->sizePolicy().hasHeightForWidth());
+        dateEdit->setSizePolicy(sizePolicy);
         dateEdit->setDateTime(QDateTime(QDate(2014, 1, 1), QTime(0, 0, 0)));
-        dateEdit->setMaximumDateTime(QDateTime(QDate(8000, 1, 7), QTime(23, 59, 59)));
+        dateEdit->setMaximumDateTime(QDateTime(QDate(8000, 1, 9), QTime(23, 59, 59)));
+        dateEdit->setDisplayFormat(QString::fromUtf8("yyyy-MM-dd"));
         dateEdit->setCalendarPopup(true);
         dateEdit->setDate(QDate(2014, 1, 1));
 
-        verticalLayout->addWidget(dateEdit);
+        horizontalLayout_10->addWidget(dateEdit);
+
+        horizontalSpacer_5 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        horizontalLayout_10->addItem(horizontalSpacer_5);
 
 
-        horizontalLayout_10->addLayout(verticalLayout);
+        verticalLayout->addLayout(horizontalLayout_10);
 
-        verticalLayout_2 = new QVBoxLayout();
-        verticalLayout_2->setSpacing(6);
-        verticalLayout_2->setObjectName("verticalLayout_2");
-        labelFechaFin = new QLabel(tab_3);
-        labelFechaFin->setObjectName("labelFechaFin");
+        verticalSpacer = new QSpacerItem(20, 181, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
 
-        verticalLayout_2->addWidget(labelFechaFin);
-
-        dateEdit_2 = new QDateEdit(tab_3);
-        dateEdit_2->setObjectName("dateEdit_2");
-        sizePolicy4.setHeightForWidth(dateEdit_2->sizePolicy().hasHeightForWidth());
-        dateEdit_2->setSizePolicy(sizePolicy4);
-        dateEdit_2->setCalendarPopup(true);
-        dateEdit_2->setDate(QDate(2014, 1, 1));
-
-        verticalLayout_2->addWidget(dateEdit_2);
-
-
-        horizontalLayout_10->addLayout(verticalLayout_2);
-
-
-        verticalLayout_5->addLayout(horizontalLayout_10);
+        verticalLayout->addItem(verticalSpacer);
 
         horizontalLayout_8 = new QHBoxLayout();
         horizontalLayout_8->setSpacing(6);
@@ -649,11 +734,7 @@ public:
         horizontalLayout_8->addWidget(pushButtonRegistrar);
 
 
-        verticalLayout_5->addLayout(horizontalLayout_8);
-
-        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
-
-        verticalLayout_5->addItem(verticalSpacer);
+        verticalLayout->addLayout(horizontalLayout_8);
 
         tabWidgetRegPago->addTab(tab_3, QString());
         tab_4 = new QWidget();
@@ -710,9 +791,9 @@ public:
         tableView = new QTableView(tab_4);
         tableView->setObjectName("tableView");
         tableView->setAutoFillBackground(true);
-        tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-        tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-        tableView->setTextElideMode(Qt::ElideMiddle);
+        tableView->setEditTriggers(QAbstractItemView::EditTrigger::NoEditTriggers);
+        tableView->setSelectionMode(QAbstractItemView::SelectionMode::ExtendedSelection);
+        tableView->setTextElideMode(Qt::TextElideMode::ElideMiddle);
         tableView->horizontalHeader()->setCascadingSectionResizes(false);
         tableView->horizontalHeader()->setDefaultSectionSize(130);
         tableView->horizontalHeader()->setProperty("showSortIndicator", QVariant(false));
@@ -789,7 +870,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName("menuBar");
-        menuBar->setGeometry(QRect(0, 0, 657, 27));
+        menuBar->setGeometry(QRect(0, 0, 786, 27));
         menuMenu = new QMenu(menuBar);
         menuMenu->setObjectName("menuMenu");
         MainWindow->setMenuBar(menuBar);
@@ -802,8 +883,8 @@ public:
         QObject::connect(cbRegEntrada, &QCheckBox::clicked, tableInOutCar, &QTableView::setVisible);
         QObject::connect(cbRegSalida, &QCheckBox::clicked, tableViewRegVeh, &QTableView::setVisible);
 
-        tabWidget->setCurrentIndex(1);
-        tabWidgetRegPago->setCurrentIndex(2);
+        tabWidget->setCurrentIndex(0);
+        tabWidgetRegPago->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -828,20 +909,20 @@ public:
         cbRegEntrada->setText(QCoreApplication::translate("MainWindow", "Tabla de Registros Entrada:", nullptr));
         cbRegSalida->setText(QCoreApplication::translate("MainWindow", "Tabla de Registros de Salida:", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(Ingreso), QCoreApplication::translate("MainWindow", "Ingreso Vehiculos", nullptr));
-        label_10->setText(QCoreApplication::translate("MainWindow", "Buscar por Placa", nullptr));
+        label_10->setText(QCoreApplication::translate("MainWindow", "Buscar", nullptr));
         label_12->setText(QCoreApplication::translate("MainWindow", "Valor a registrar", nullptr));
         label_16->setText(QCoreApplication::translate("MainWindow", "Dias Pagados", nullptr));
         pushButtonRegPago->setText(QCoreApplication::translate("MainWindow", "Registrar Pago", nullptr));
         tabWidgetRegPago->setTabText(tabWidgetRegPago->indexOf(tab_6), QCoreApplication::translate("MainWindow", "Registrar Pago", nullptr));
-        label_2->setText(QCoreApplication::translate("MainWindow", "Nombre", nullptr));
-        label_5->setText(QCoreApplication::translate("MainWindow", "Placa", nullptr));
-        label_4->setText(QCoreApplication::translate("MainWindow", "Tel\303\251fono", nullptr));
+        groupBox_2->setTitle(QCoreApplication::translate("MainWindow", "Datos Veh\303\255culo", nullptr));
+        label_5->setText(QCoreApplication::translate("MainWindow", "Placa                      ", nullptr));
+        label->setText(QCoreApplication::translate("MainWindow", "Casillero                ", nullptr));
+        label_6->setText(QCoreApplication::translate("MainWindow", "Valor Mensualidad", nullptr));
+        groupBox->setTitle(QCoreApplication::translate("MainWindow", "Datos Propietario", nullptr));
+        label_2->setText(QCoreApplication::translate("MainWindow", "Nombre   ", nullptr));
         label_3->setText(QCoreApplication::translate("MainWindow", "Direcci\303\263n", nullptr));
-        label_6->setText(QCoreApplication::translate("MainWindow", "Costo de Mensualidad", nullptr));
+        label_4->setText(QCoreApplication::translate("MainWindow", "Tel\303\251fono  ", nullptr));
         labelFechaInicio->setText(QCoreApplication::translate("MainWindow", "Inicio Mensualidad", nullptr));
-        dateEdit->setDisplayFormat(QCoreApplication::translate("MainWindow", "yyyy-MM-dd hh:mm:ss", nullptr));
-        labelFechaFin->setText(QCoreApplication::translate("MainWindow", "Fin Mensualidad", nullptr));
-        dateEdit_2->setDisplayFormat(QCoreApplication::translate("MainWindow", "yyyy-MM-dd hh:mm:ss", nullptr));
         pushButtonRegistrar->setText(QCoreApplication::translate("MainWindow", "Registrar Usuario", nullptr));
         tabWidgetRegPago->setTabText(tabWidgetRegPago->indexOf(tab_3), QCoreApplication::translate("MainWindow", "Registrar Usuario", nullptr));
         label_7->setText(QCoreApplication::translate("MainWindow", "Ver", nullptr));

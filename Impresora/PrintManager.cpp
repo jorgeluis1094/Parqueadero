@@ -10,7 +10,7 @@ bool PrintManager::printReciboEntrada(const ReciboEntrada& data) {
     ReciboEntradaFormatter formatter(data);
     QByteArray bytes = formatter.format();
 
-    auto transport = std::make_unique<UsbLpTransport>("/dev/usb/lp0");
+    auto transport = std::make_unique<UsbLpTransport>("/dev/usb/lp1");
     PrintDevice printer(std::move(transport));
 
     if (!printer.connect())
@@ -27,7 +27,7 @@ bool PrintManager::printReciboMensualidad(const ReciboMensualidad& data) {
     //ReciboEntradaFormatter formatter(data);
     QByteArray bytes = formatter.format();
 
-    auto transport = std::make_unique<UsbLpTransport>("/dev/usb/lp0");
+    auto transport = std::make_unique<UsbLpTransport>("/dev/usb/lp1");
     PrintDevice printer(std::move(transport));
 
     if (!printer.connect())
@@ -44,7 +44,7 @@ bool PrintManager::printReciboVentaProductos(const ReciboProductos& data) {
     //ReciboEntradaFormatter formatter(data);
     QByteArray bytes = formatter.format();
 
-    auto transport = std::make_unique<UsbLpTransport>("/dev/usb/lp0");
+    auto transport = std::make_unique<UsbLpTransport>("/dev/usb/lp1");
     PrintDevice printer(std::move(transport));
 
     if (!printer.connect())
@@ -62,7 +62,7 @@ bool PrintManager::printCierreCaja(const CierreCaja& data)
     CierreCajaFormatter formatter(data);
     QByteArray bytes = formatter.format();
 
-    auto transport = std::make_unique<UsbLpTransport>("/dev/usb/lp0");
+    auto transport = std::make_unique<UsbLpTransport>("/dev/usb/lp1");
     PrintDevice printer(std::move(transport));
 
     if (!printer.connect())

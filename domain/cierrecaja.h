@@ -5,7 +5,7 @@
 
 class CierreCaja {
 public:
-    QString fechaHora;
+    QString fechaHoraInicio, fechaHoraFin;
     QString usuario;
 
     // Totales por tipo de pago

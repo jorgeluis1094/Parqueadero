@@ -68,8 +68,6 @@ private slots:
 
     void imprimirReciboTablaOtros(void);
 
-    void on_lineEditRegPago_editingFinished();
-
     void on_pushButtonRegPago_clicked();
 
     void on_comboBoxVerMensualidad_currentIndexChanged(int index);
@@ -80,8 +78,7 @@ private slots:
 
     void on_pB_VentaOtroProducto_clicked();
 
-
-    void on_lineEditFiltarmensualidad_textChanged(const QString &arg1);
+    void on_lineEditRegPago_textChanged(const QString &arg1);
 
 private:
     Ui::MainWindow *ui;
