@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui sql printsupport
+QT       += core gui sql printsupport network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,6 +13,7 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
+    Database/conexionpostgres.cpp \
     Impresora/PrintManager.cpp \
     Impresora/commands/EscPosBuilder.cpp \
     Impresora/config/printconfig.cpp \
@@ -23,6 +24,7 @@ SOURCES += main.cpp\
     Impresora/receipts/reciboProdutosFormatter.cpp \
     Impresora/receipts/recibopagomensualidadformatter.cpp \
     Impresora/transport/UsbLpTransport.cpp \
+    Network/licenciamanager.cpp \
         mainwindow.cpp \
     FuncionesTiempo.cpp \
     ManejoTablas.cpp \
@@ -33,6 +35,7 @@ SOURCES += main.cpp\
     relojdigital.cpp
 
 HEADERS  += mainwindow.h \
+    Database/conexionpostgres.h \
     FuncioneTiempo.h \
     Impresora/PrintManager.h \
     Impresora/commands/EscPosBuilder.h \
@@ -47,6 +50,7 @@ HEADERS  += mainwindow.h \
     Impresora/transport/ITransport.h \
     Impresora/transport/UsbLpTransport.h \
     ManejoTablas.h \
+    Network/licenciamanager.h \
     TipoPersona/persona.h \
     TipoPersona/operario.h \
     TipoPersona/clientemensualidad.h \

@@ -14,10 +14,10 @@ EQ            = =
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DQT_QML_DEBUG -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_SQL_LIB -DQT_CORE_LIB
+DEFINES       = -DQT_QML_DEBUG -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_SQL_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -g -Wall -Wextra -fPIC -D_REENTRANT $(DEFINES)
 CXXFLAGS      = -pipe -g -Wall -Wextra -fPIC -D_REENTRANT $(DEFINES)
-INCPATH       = -I../../../Parqueadero -I. -I/usr/include/mysql -I/opt/Qt/6.9.2/gcc_64/include -I/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport -I/opt/Qt/6.9.2/gcc_64/include/QtWidgets -I/opt/Qt/6.9.2/gcc_64/include/QtGui -I/opt/Qt/6.9.2/gcc_64/include/QtSql -I/opt/Qt/6.9.2/gcc_64/include/QtCore -I. -I. -I/opt/Qt/6.9.2/gcc_64/mkspecs/linux-g++
+INCPATH       = -I../../../Parqueadero -I. -I/usr/include/mysql -I/opt/Qt/6.9.2/gcc_64/include -I/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport -I/opt/Qt/6.9.2/gcc_64/include/QtWidgets -I/opt/Qt/6.9.2/gcc_64/include/QtGui -I/opt/Qt/6.9.2/gcc_64/include/QtSql -I/opt/Qt/6.9.2/gcc_64/include/QtNetwork -I/opt/Qt/6.9.2/gcc_64/include/QtCore -I. -I. -I/opt/Qt/6.9.2/gcc_64/mkspecs/linux-g++
 QMAKE         = /opt/Qt/6.9.2/gcc_64/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -37,10 +37,10 @@ MOVE          = mv -f
 TAR           = tar -cf
 COMPRESS      = gzip -9f
 DISTNAME      = Parqueadero1.0.0
-DISTDIR = /home/lynx/Documentos/Programas/Parqueadero/build/Desktop_Qt_6_9_2-Debug/.tmp/Parqueadero1.0.0
+DISTDIR = /home/lynx/Documentos/Code/Parqueadero/build/Desktop_Qt_6_9_2-Debug/.tmp/Parqueadero1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-rpath,/opt/Qt/6.9.2/gcc_64/lib -Wl,-rpath-link,/opt/Qt/6.9.2/gcc_64/lib
-LIBS          = $(SUBLIBS) /opt/Qt/6.9.2/gcc_64/lib/libQt6PrintSupport.so /opt/Qt/6.9.2/gcc_64/lib/libQt6Widgets.so /opt/Qt/6.9.2/gcc_64/lib/libQt6Gui.so /opt/Qt/6.9.2/gcc_64/lib/libQt6Sql.so /opt/Qt/6.9.2/gcc_64/lib/libQt6Core.so -lpthread -lGL   
+LIBS          = $(SUBLIBS) /opt/Qt/6.9.2/gcc_64/lib/libQt6PrintSupport.so /opt/Qt/6.9.2/gcc_64/lib/libQt6Widgets.so /opt/Qt/6.9.2/gcc_64/lib/libQt6Gui.so /opt/Qt/6.9.2/gcc_64/lib/libQt6Sql.so /opt/Qt/6.9.2/gcc_64/lib/libQt6Network.so /opt/Qt/6.9.2/gcc_64/lib/libQt6Core.so -lpthread -lGL   
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -53,6 +53,7 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = ../../main.cpp \
+		../../Database/conexionpostgres.cpp \
 		../../Impresora/PrintManager.cpp \
 		../../Impresora/commands/EscPosBuilder.cpp \
 		../../Impresora/config/printconfig.cpp \
@@ -63,6 +64,7 @@ SOURCES       = ../../main.cpp \
 		../../Impresora/receipts/reciboProdutosFormatter.cpp \
 		../../Impresora/receipts/recibopagomensualidadformatter.cpp \
 		../../Impresora/transport/UsbLpTransport.cpp \
+		../../Network/licenciamanager.cpp \
 		../../mainwindow.cpp \
 		../../FuncionesTiempo.cpp \
 		../../ManejoTablas.cpp \
@@ -71,8 +73,10 @@ SOURCES       = ../../main.cpp \
 		../../TipoPersona/clientemensualidad.cpp \
 		../../TipoVehiculos/vehiculo.cpp \
 		../../relojdigital.cpp moc_mainwindow.cpp \
+		moc_licenciamanager.cpp \
 		moc_relojdigital.cpp
 OBJECTS       = main.o \
+		conexionpostgres.o \
 		PrintManager.o \
 		EscPosBuilder.o \
 		printconfig.o \
@@ -83,6 +87,7 @@ OBJECTS       = main.o \
 		reciboProdutosFormatter.o \
 		recibopagomensualidadformatter.o \
 		UsbLpTransport.o \
+		licenciamanager.o \
 		mainwindow.o \
 		FuncionesTiempo.o \
 		ManejoTablas.o \
@@ -92,6 +97,7 @@ OBJECTS       = main.o \
 		vehiculo.o \
 		relojdigital.o \
 		moc_mainwindow.o \
+		moc_licenciamanager.o \
 		moc_relojdigital.o
 DIST          = /opt/Qt/6.9.2/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/Qt/6.9.2/gcc_64/mkspecs/common/unix.conf \
@@ -331,6 +337,7 @@ DIST          = /opt/Qt/6.9.2/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/Qt/6.9.2/gcc_64/mkspecs/features/yacc.prf \
 		/opt/Qt/6.9.2/gcc_64/mkspecs/features/lex.prf \
 		../../../../Parqueadero.pro ../../mainwindow.h \
+		../../Database/conexionpostgres.h \
 		../../FuncioneTiempo.h \
 		../../Impresora/PrintManager.h \
 		../../Impresora/commands/EscPosBuilder.h \
@@ -345,6 +352,7 @@ DIST          = /opt/Qt/6.9.2/gcc_64/mkspecs/features/spec_pre.prf \
 		../../Impresora/transport/ITransport.h \
 		../../Impresora/transport/UsbLpTransport.h \
 		../../ManejoTablas.h \
+		../../Network/licenciamanager.h \
 		../../TipoPersona/persona.h \
 		../../TipoPersona/operario.h \
 		../../TipoPersona/clientemensualidad.h \
@@ -354,6 +362,7 @@ DIST          = /opt/Qt/6.9.2/gcc_64/mkspecs/features/spec_pre.prf \
 		../../domain/reciboentrada.h \
 		../../domain/recibomensualidad.h \
 		../../relojdigital.h ../../main.cpp \
+		../../Database/conexionpostgres.cpp \
 		../../Impresora/PrintManager.cpp \
 		../../Impresora/commands/EscPosBuilder.cpp \
 		../../Impresora/config/printconfig.cpp \
@@ -364,6 +373,7 @@ DIST          = /opt/Qt/6.9.2/gcc_64/mkspecs/features/spec_pre.prf \
 		../../Impresora/receipts/reciboProdutosFormatter.cpp \
 		../../Impresora/receipts/recibopagomensualidadformatter.cpp \
 		../../Impresora/transport/UsbLpTransport.cpp \
+		../../Network/licenciamanager.cpp \
 		../../mainwindow.cpp \
 		../../FuncionesTiempo.cpp \
 		../../ManejoTablas.cpp \
@@ -625,6 +635,7 @@ Makefile: ../../Parqueadero.pro /opt/Qt/6.9.2/gcc_64/mkspecs/linux-g++/qmake.con
 		/opt/Qt/6.9.2/gcc_64/lib/libQt6Widgets.prl \
 		/opt/Qt/6.9.2/gcc_64/lib/libQt6Gui.prl \
 		/opt/Qt/6.9.2/gcc_64/lib/libQt6Sql.prl \
+		/opt/Qt/6.9.2/gcc_64/lib/libQt6Network.prl \
 		/opt/Qt/6.9.2/gcc_64/lib/libQt6Core.prl
 	$(QMAKE) -o Makefile ../../Parqueadero.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
 /opt/Qt/6.9.2/gcc_64/mkspecs/features/spec_pre.prf:
@@ -869,6 +880,7 @@ Makefile: ../../Parqueadero.pro /opt/Qt/6.9.2/gcc_64/mkspecs/linux-g++/qmake.con
 /opt/Qt/6.9.2/gcc_64/lib/libQt6Widgets.prl:
 /opt/Qt/6.9.2/gcc_64/lib/libQt6Gui.prl:
 /opt/Qt/6.9.2/gcc_64/lib/libQt6Sql.prl:
+/opt/Qt/6.9.2/gcc_64/lib/libQt6Network.prl:
 /opt/Qt/6.9.2/gcc_64/lib/libQt6Core.prl:
 qmake: FORCE
 	@$(QMAKE) -o Makefile ../../Parqueadero.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
@@ -885,8 +897,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /opt/Qt/6.9.2/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../../mainwindow.h ../../FuncioneTiempo.h ../../Impresora/PrintManager.h ../../Impresora/commands/EscPosBuilder.h ../../Impresora/config/printconfig.h ../../Impresora/output/PrintDevice.h ../../Impresora/receipts/CierreCajaFormatter.h ../../Impresora/receipts/ReceiptFormatter.h ../../Impresora/receipts/ReciboEntradaFormatter.h ../../Impresora/receipts/ReciboSalidaFormatter.h ../../Impresora/receipts/reciboProductosFormatter.h ../../Impresora/receipts/recibopagomensualidadformatter.h ../../Impresora/transport/ITransport.h ../../Impresora/transport/UsbLpTransport.h ../../ManejoTablas.h ../../TipoPersona/persona.h ../../TipoPersona/operario.h ../../TipoPersona/clientemensualidad.h ../../TipoVehiculos/vehiculo.h ../../domain/cierrecaja.h ../../domain/reciboProductos.h ../../domain/reciboentrada.h ../../domain/recibomensualidad.h ../../relojdigital.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../../main.cpp ../../Impresora/PrintManager.cpp ../../Impresora/commands/EscPosBuilder.cpp ../../Impresora/config/printconfig.cpp ../../Impresora/output/PrintDevice.cpp ../../Impresora/receipts/CierreCajaFormatter.cpp ../../Impresora/receipts/ReceiptFormatter.cpp ../../Impresora/receipts/ReciboEntradaFormatter.cpp ../../Impresora/receipts/reciboProdutosFormatter.cpp ../../Impresora/receipts/recibopagomensualidadformatter.cpp ../../Impresora/transport/UsbLpTransport.cpp ../../mainwindow.cpp ../../FuncionesTiempo.cpp ../../ManejoTablas.cpp ../../TipoPersona/persona.cpp ../../TipoPersona/operario.cpp ../../TipoPersona/clientemensualidad.cpp ../../TipoVehiculos/vehiculo.cpp ../../relojdigital.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../../mainwindow.h ../../Database/conexionpostgres.h ../../FuncioneTiempo.h ../../Impresora/PrintManager.h ../../Impresora/commands/EscPosBuilder.h ../../Impresora/config/printconfig.h ../../Impresora/output/PrintDevice.h ../../Impresora/receipts/CierreCajaFormatter.h ../../Impresora/receipts/ReceiptFormatter.h ../../Impresora/receipts/ReciboEntradaFormatter.h ../../Impresora/receipts/ReciboSalidaFormatter.h ../../Impresora/receipts/reciboProductosFormatter.h ../../Impresora/receipts/recibopagomensualidadformatter.h ../../Impresora/transport/ITransport.h ../../Impresora/transport/UsbLpTransport.h ../../ManejoTablas.h ../../Network/licenciamanager.h ../../TipoPersona/persona.h ../../TipoPersona/operario.h ../../TipoPersona/clientemensualidad.h ../../TipoVehiculos/vehiculo.h ../../domain/cierrecaja.h ../../domain/reciboProductos.h ../../domain/reciboentrada.h ../../domain/recibomensualidad.h ../../relojdigital.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../../main.cpp ../../Database/conexionpostgres.cpp ../../Impresora/PrintManager.cpp ../../Impresora/commands/EscPosBuilder.cpp ../../Impresora/config/printconfig.cpp ../../Impresora/output/PrintDevice.cpp ../../Impresora/receipts/CierreCajaFormatter.cpp ../../Impresora/receipts/ReceiptFormatter.cpp ../../Impresora/receipts/ReciboEntradaFormatter.cpp ../../Impresora/receipts/reciboProdutosFormatter.cpp ../../Impresora/receipts/recibopagomensualidadformatter.cpp ../../Impresora/transport/UsbLpTransport.cpp ../../Network/licenciamanager.cpp ../../mainwindow.cpp ../../FuncionesTiempo.cpp ../../ManejoTablas.cpp ../../TipoPersona/persona.cpp ../../TipoPersona/operario.cpp ../../TipoPersona/clientemensualidad.cpp ../../TipoVehiculos/vehiculo.cpp ../../relojdigital.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../../mainwindow.ui $(DISTDIR)/
 
 
@@ -919,9 +931,9 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /opt/Qt/6.9.2/gcc_64/mkspecs/features/data/dummy.cpp
 	g++ -pipe -g -Wall -Wextra -fPIC -dM -E -o moc_predefs.h /opt/Qt/6.9.2/gcc_64/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_mainwindow.cpp moc_relojdigital.cpp
+compiler_moc_header_make_all: moc_mainwindow.cpp moc_licenciamanager.cpp moc_relojdigital.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp moc_relojdigital.cpp
+	-$(DEL_FILE) moc_mainwindow.cpp moc_licenciamanager.cpp moc_relojdigital.cpp
 moc_mainwindow.cpp: ../../mainwindow.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QMainWindow \
 		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qmainwindow.h \
@@ -1345,7 +1357,185 @@ moc_mainwindow.cpp: ../../mainwindow.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/QMarginsF \
 		moc_predefs.h \
 		/opt/Qt/6.9.2/gcc_64/libexec/moc
-	/opt/Qt/6.9.2/gcc_64/libexec/moc $(DEFINES) --include /home/lynx/Documentos/Programas/Parqueadero/build/Desktop_Qt_6_9_2-Debug/moc_predefs.h -I/opt/Qt/6.9.2/gcc_64/mkspecs/linux-g++ -I/home/lynx/Documentos/Programas/Parqueadero -I/usr/include/mysql -I/opt/Qt/6.9.2/gcc_64/include -I/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport -I/opt/Qt/6.9.2/gcc_64/include/QtWidgets -I/opt/Qt/6.9.2/gcc_64/include/QtGui -I/opt/Qt/6.9.2/gcc_64/include/QtSql -I/opt/Qt/6.9.2/gcc_64/include/QtCore -I. -I/usr/include/c++/14 -I/usr/include/x86_64-linux-gnu/c++/14 -I/usr/include/c++/14/backward -I/usr/lib/gcc/x86_64-linux-gnu/14/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../mainwindow.h -o moc_mainwindow.cpp
+	/opt/Qt/6.9.2/gcc_64/libexec/moc $(DEFINES) --include /home/lynx/Documentos/Code/Parqueadero/build/Desktop_Qt_6_9_2-Debug/moc_predefs.h -I/opt/Qt/6.9.2/gcc_64/mkspecs/linux-g++ -I/home/lynx/Documentos/Code/Parqueadero -I/usr/include/mysql -I/opt/Qt/6.9.2/gcc_64/include -I/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport -I/opt/Qt/6.9.2/gcc_64/include/QtWidgets -I/opt/Qt/6.9.2/gcc_64/include/QtGui -I/opt/Qt/6.9.2/gcc_64/include/QtSql -I/opt/Qt/6.9.2/gcc_64/include/QtNetwork -I/opt/Qt/6.9.2/gcc_64/include/QtCore -I. -I/usr/include/c++/14 -I/usr/include/x86_64-linux-gnu/c++/14 -I/usr/include/c++/14/backward -I/usr/lib/gcc/x86_64-linux-gnu/14/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../mainwindow.h -o moc_mainwindow.cpp
+
+moc_licenciamanager.cpp: ../../Network/licenciamanager.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QObject \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qobject.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qobjectdefs.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qnamespace.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qglobal.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtcoreglobal.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtversionchecks.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtconfiginclude.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qconfig.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtcore-config.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtconfigmacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtdeprecationdefinitions.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcompilerdetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qprocessordetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsystemdetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtcoreexports.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtdeprecationmarkers.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtclasshelpermacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtpreprocessorsupport.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qassert.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtnoop.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtypes.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtversion.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtypeinfo.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontainerfwd.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsysinfo.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlogging.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qflags.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcompare_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qatomic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbasicatomic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qgenericatomic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qyieldcpu.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qconstructormacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdarwinhelpers.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qexceptionhandling.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qforeach.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qttypetraits.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qfunctionpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qglobalstatic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmalloc.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qminmax.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qnumeric.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qoverload.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qswap.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtenvironmentvariables.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtresource.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qttranslation.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qversiontagging.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcompare.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstdlibdetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcomparehelpers.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20type_traits.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtmetamacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qfunctionaltools_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstring.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qchar.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearray.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qrefcount.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qarraydata.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qpair.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qarraydatapointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qarraydataops.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontainertools_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qxptype_traits.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20functional.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20memory.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q17memory.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearrayalgorithms.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearrayview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringfwd.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringliteral.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringalgorithms.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlatin1stringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qanystringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qutf8stringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringtokenizer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringbuilder.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringconverter.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringconverter_base.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlist.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qhashfunctions.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qiterator.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearraylist.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringlist.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qalgorithms.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringmatcher.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcoreevent.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbasictimer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qeventloop.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdeadlinetimer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qelapsedtimer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmetatype.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdatastream.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qscopedpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qiodevicebase.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qfloat16.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmath.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtformat_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qiterable.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmetacontainer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontainerinfo.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtaggedpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qscopeguard.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qobject_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbindingstorage.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/QNetworkAccessManager \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qnetworkaccessmanager.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qtnetworkglobal.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qtnetwork-config.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qtnetworkexports.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qnetworkrequest.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qhttpheaders.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qshareddata.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QSharedDataPointer \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QString \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QUrl \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qurl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QVariant \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qvariant.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdebug.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtextstream.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontiguouscache.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsharedpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmap.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qshareddata_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qset.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qhash.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qvarlengtharray.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q23utility.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20utility.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q26numeric.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QList \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/QSslConfiguration \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qsslconfiguration.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qsslsocket.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qtcpsocket.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qabstractsocket.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qhostaddress.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qiodevice.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qspan.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20iterator.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qsslerror.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qsslcertificate.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcryptographichash.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdatetime.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcalendar.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlocale.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qssl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QFlags \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/QSslPreSharedKeyAuthenticator \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qsslpresharedkeyauthenticator.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QMetaType \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/QNetworkReply \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qnetworkreply.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QIODevice \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/QNetworkRequest \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QJsonDocument \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qjsondocument.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qjsonparseerror.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qjsonvalue.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcborvalue.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcborcommon.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qregularexpression.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/quuid.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qendian.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QJsonObject \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qjsonobject.h \
+		moc_predefs.h \
+		/opt/Qt/6.9.2/gcc_64/libexec/moc
+	/opt/Qt/6.9.2/gcc_64/libexec/moc $(DEFINES) --include /home/lynx/Documentos/Code/Parqueadero/build/Desktop_Qt_6_9_2-Debug/moc_predefs.h -I/opt/Qt/6.9.2/gcc_64/mkspecs/linux-g++ -I/home/lynx/Documentos/Code/Parqueadero -I/usr/include/mysql -I/opt/Qt/6.9.2/gcc_64/include -I/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport -I/opt/Qt/6.9.2/gcc_64/include/QtWidgets -I/opt/Qt/6.9.2/gcc_64/include/QtGui -I/opt/Qt/6.9.2/gcc_64/include/QtSql -I/opt/Qt/6.9.2/gcc_64/include/QtNetwork -I/opt/Qt/6.9.2/gcc_64/include/QtCore -I. -I/usr/include/c++/14 -I/usr/include/x86_64-linux-gnu/c++/14 -I/usr/include/c++/14/backward -I/usr/lib/gcc/x86_64-linux-gnu/14/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../Network/licenciamanager.h -o moc_licenciamanager.cpp
 
 moc_relojdigital.cpp: ../../relojdigital.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QLCDNumber \
@@ -1548,7 +1738,7 @@ moc_relojdigital.cpp: ../../relojdigital.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtGui/qguiapplication_platform.h \
 		moc_predefs.h \
 		/opt/Qt/6.9.2/gcc_64/libexec/moc
-	/opt/Qt/6.9.2/gcc_64/libexec/moc $(DEFINES) --include /home/lynx/Documentos/Programas/Parqueadero/build/Desktop_Qt_6_9_2-Debug/moc_predefs.h -I/opt/Qt/6.9.2/gcc_64/mkspecs/linux-g++ -I/home/lynx/Documentos/Programas/Parqueadero -I/usr/include/mysql -I/opt/Qt/6.9.2/gcc_64/include -I/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport -I/opt/Qt/6.9.2/gcc_64/include/QtWidgets -I/opt/Qt/6.9.2/gcc_64/include/QtGui -I/opt/Qt/6.9.2/gcc_64/include/QtSql -I/opt/Qt/6.9.2/gcc_64/include/QtCore -I. -I/usr/include/c++/14 -I/usr/include/x86_64-linux-gnu/c++/14 -I/usr/include/c++/14/backward -I/usr/lib/gcc/x86_64-linux-gnu/14/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../relojdigital.h -o moc_relojdigital.cpp
+	/opt/Qt/6.9.2/gcc_64/libexec/moc $(DEFINES) --include /home/lynx/Documentos/Code/Parqueadero/build/Desktop_Qt_6_9_2-Debug/moc_predefs.h -I/opt/Qt/6.9.2/gcc_64/mkspecs/linux-g++ -I/home/lynx/Documentos/Code/Parqueadero -I/usr/include/mysql -I/opt/Qt/6.9.2/gcc_64/include -I/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport -I/opt/Qt/6.9.2/gcc_64/include/QtWidgets -I/opt/Qt/6.9.2/gcc_64/include/QtGui -I/opt/Qt/6.9.2/gcc_64/include/QtSql -I/opt/Qt/6.9.2/gcc_64/include/QtNetwork -I/opt/Qt/6.9.2/gcc_64/include/QtCore -I. -I/usr/include/c++/14 -I/usr/include/x86_64-linux-gnu/c++/14 -I/usr/include/c++/14/backward -I/usr/lib/gcc/x86_64-linux-gnu/14/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../relojdigital.h -o moc_relojdigital.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -1939,9 +2129,9 @@ main.o: ../../main.cpp /opt/Qt/6.9.2/gcc_64/include/QtWidgets/QApplication \
 		/opt/Qt/6.9.2/gcc_64/include/QtGui/qinputmethod.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlocale.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtGui/qguiapplication_platform.h \
-		../../mainwindow.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QMainWindow \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qmainwindow.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QMessageBox \
+		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qmessagebox.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qdialog.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qwidget.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtGui/qaction.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtGui/qkeysequence.h \
@@ -1970,11 +2160,12 @@ main.o: ../../main.cpp /opt/Qt/6.9.2/gcc_64/include/QtWidgets/QApplication \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/QSizeF \
 		/opt/Qt/6.9.2/gcc_64/include/QtGui/QTransform \
 		/opt/Qt/6.9.2/gcc_64/include/QtGui/qscreen_platform.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qtabwidget.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QMessageBox \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qmessagebox.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qdialog.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qdialogbuttonbox.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QEventLoop \
+		../../mainwindow.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QMainWindow \
+		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qmainwindow.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qtabwidget.h \
 		../../relojdigital.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QLCDNumber \
 		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qlcdnumber.h \
@@ -2192,8 +2383,176 @@ main.o: ../../main.cpp /opt/Qt/6.9.2/gcc_64/include/QtWidgets/QApplication \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/QVector \
 		/opt/Qt/6.9.2/gcc_64/include/QtGui/QPageLayout \
 		/opt/Qt/6.9.2/gcc_64/include/QtGui/QPageSize \
-		/opt/Qt/6.9.2/gcc_64/include/QtCore/QMarginsF
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QMarginsF \
+		../../Database/conexionpostgres.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/QSqlDatabase \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/QSqlError \
+		../../Network/licenciamanager.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/QNetworkAccessManager \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qnetworkaccessmanager.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qtnetworkglobal.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qtnetwork-config.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qtnetworkexports.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qnetworkrequest.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qhttpheaders.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QSharedDataPointer \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QUrl \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/QSslConfiguration \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qsslconfiguration.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qsslsocket.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qtcpsocket.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qabstractsocket.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qhostaddress.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qsslerror.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qsslcertificate.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qssl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QFlags \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/QSslPreSharedKeyAuthenticator \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qsslpresharedkeyauthenticator.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QMetaType \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/QNetworkReply \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qnetworkreply.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QIODevice \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/QNetworkRequest \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QJsonDocument \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QJsonObject \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QTextStream
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../../main.cpp
+
+conexionpostgres.o: ../../Database/conexionpostgres.cpp ../../Database/conexionpostgres.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/QSqlDatabase \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/qsqldatabase.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/qtsqlglobal.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qglobal.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtcoreglobal.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtversionchecks.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtconfiginclude.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qconfig.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtcore-config.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtconfigmacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtdeprecationdefinitions.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcompilerdetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qprocessordetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsystemdetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtcoreexports.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtdeprecationmarkers.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtclasshelpermacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtpreprocessorsupport.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qassert.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtnoop.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtypes.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtversion.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtypeinfo.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontainerfwd.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsysinfo.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlogging.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qflags.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcompare_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qatomic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbasicatomic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qgenericatomic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qyieldcpu.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qconstructormacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdarwinhelpers.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qexceptionhandling.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qforeach.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qttypetraits.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qfunctionpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qglobalstatic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmalloc.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qminmax.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qnumeric.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qoverload.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qswap.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtenvironmentvariables.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtresource.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qttranslation.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qversiontagging.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/qtsql-config.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/qtsqlexports.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmetaobject.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qobjectdefs.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qnamespace.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcompare.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstdlibdetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcomparehelpers.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20type_traits.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtmetamacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qfunctionaltools_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qvariant.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmetatype.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearray.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qrefcount.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qarraydata.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qpair.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qarraydatapointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qarraydataops.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontainertools_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qxptype_traits.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20functional.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20memory.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q17memory.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearrayalgorithms.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearrayview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringfwd.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdatastream.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qscopedpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qiodevicebase.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qfloat16.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qhashfunctions.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstring.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qchar.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringliteral.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringalgorithms.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlatin1stringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qanystringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qutf8stringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringtokenizer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringbuilder.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringconverter.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringconverter_base.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmath.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qalgorithms.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtformat_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qiterable.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmetacontainer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontainerinfo.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtaggedpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qscopeguard.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdebug.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtextstream.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontiguouscache.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsharedpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qshareddata.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlist.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qiterator.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearraylist.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringlist.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringmatcher.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmap.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qshareddata_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qset.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qhash.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qvarlengtharray.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q23utility.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20utility.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qobject.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcoreevent.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbasictimer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qeventloop.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdeadlinetimer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qelapsedtimer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qobject_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbindingstorage.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/QSqlError \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/qsqlerror.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QDebug
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o conexionpostgres.o ../../Database/conexionpostgres.cpp
 
 PrintManager.o: ../../Impresora/PrintManager.cpp ../../Impresora/PrintManager.h \
 		../../Impresora/output/PrintDevice.h \
@@ -3574,6 +3933,182 @@ UsbLpTransport.o: ../../Impresora/transport/UsbLpTransport.cpp ../../Impresora/t
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20iterator.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o UsbLpTransport.o ../../Impresora/transport/UsbLpTransport.cpp
 
+licenciamanager.o: ../../Network/licenciamanager.cpp ../../Network/licenciamanager.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QObject \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qobject.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qobjectdefs.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qnamespace.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qglobal.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtcoreglobal.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtversionchecks.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtconfiginclude.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qconfig.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtcore-config.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtconfigmacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtdeprecationdefinitions.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcompilerdetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qprocessordetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsystemdetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtcoreexports.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtdeprecationmarkers.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtclasshelpermacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtpreprocessorsupport.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qassert.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtnoop.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtypes.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtversion.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtypeinfo.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontainerfwd.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsysinfo.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlogging.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qflags.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcompare_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qatomic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbasicatomic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qgenericatomic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qyieldcpu.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qconstructormacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdarwinhelpers.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qexceptionhandling.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qforeach.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qttypetraits.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qfunctionpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qglobalstatic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmalloc.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qminmax.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qnumeric.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qoverload.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qswap.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtenvironmentvariables.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtresource.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qttranslation.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qversiontagging.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcompare.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstdlibdetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcomparehelpers.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20type_traits.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtmetamacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qfunctionaltools_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstring.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qchar.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearray.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qrefcount.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qarraydata.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qpair.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qarraydatapointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qarraydataops.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontainertools_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qxptype_traits.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20functional.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20memory.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q17memory.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearrayalgorithms.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearrayview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringfwd.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringliteral.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringalgorithms.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlatin1stringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qanystringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qutf8stringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringtokenizer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringbuilder.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringconverter.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringconverter_base.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlist.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qhashfunctions.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qiterator.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearraylist.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringlist.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qalgorithms.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringmatcher.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcoreevent.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbasictimer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qeventloop.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdeadlinetimer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qelapsedtimer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmetatype.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdatastream.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qscopedpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qiodevicebase.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qfloat16.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmath.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtformat_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qiterable.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmetacontainer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontainerinfo.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtaggedpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qscopeguard.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qobject_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbindingstorage.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/QNetworkAccessManager \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qnetworkaccessmanager.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qtnetworkglobal.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qtnetwork-config.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qtnetworkexports.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qnetworkrequest.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qhttpheaders.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qshareddata.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QSharedDataPointer \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QString \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QUrl \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qurl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QVariant \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qvariant.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdebug.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtextstream.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontiguouscache.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsharedpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmap.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qshareddata_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qset.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qhash.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qvarlengtharray.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q23utility.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20utility.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q26numeric.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QList \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/QSslConfiguration \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qsslconfiguration.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qsslsocket.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qtcpsocket.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qabstractsocket.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qhostaddress.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qiodevice.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qspan.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20iterator.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qsslerror.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qsslcertificate.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcryptographichash.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdatetime.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcalendar.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlocale.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qssl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QFlags \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/QSslPreSharedKeyAuthenticator \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qsslpresharedkeyauthenticator.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QMetaType \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/QNetworkReply \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/qnetworkreply.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QIODevice \
+		/opt/Qt/6.9.2/gcc_64/include/QtNetwork/QNetworkRequest \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QJsonDocument \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qjsondocument.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qjsonparseerror.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qjsonvalue.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcborvalue.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcborcommon.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qregularexpression.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/quuid.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qendian.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QJsonObject \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qjsonobject.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o licenciamanager.o ../../Network/licenciamanager.cpp
+
 mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QMainWindow \
 		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qmainwindow.h \
@@ -3995,42 +4530,7 @@ mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtGui/QPageLayout \
 		/opt/Qt/6.9.2/gcc_64/include/QtGui/QPageSize \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/QMarginsF \
-		ui_mainwindow.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtGui/QAction \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QApplication \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qapplication.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QCheckBox \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qcheckbox.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QComboBox \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QDateEdit \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qdatetimeedit.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QHBoxLayout \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qboxlayout.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qlayout.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qlayoutitem.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qgridlayout.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QHeaderView \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qheaderview.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QLabel \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qlabel.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtGui/qpicture.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtGui/qtextdocument.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QLineEdit \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qlineedit.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtGui/qtextcursor.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtGui/qtextformat.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QMenu \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qmenu.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QMenuBar \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qmenubar.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QPushButton \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qpushbutton.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QSpacerItem \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QTabWidget \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QTableView \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qtableview.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QVBoxLayout \
-		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QWidget
+		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../../mainwindow.cpp
 
 FuncionesTiempo.o: ../../FuncionesTiempo.cpp ../../FuncioneTiempo.h \
@@ -5199,6 +5699,9 @@ relojdigital.o: ../../relojdigital.cpp /opt/Qt/6.9.2/gcc_64/include/QtGui/QtGui 
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
+
+moc_licenciamanager.o: moc_licenciamanager.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_licenciamanager.o moc_licenciamanager.cpp
 
 moc_relojdigital.o: moc_relojdigital.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_relojdigital.o moc_relojdigital.cpp

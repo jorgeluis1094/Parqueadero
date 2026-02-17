@@ -703,7 +703,7 @@ public:
         sizePolicy.setHeightForWidth(dateEdit->sizePolicy().hasHeightForWidth());
         dateEdit->setSizePolicy(sizePolicy);
         dateEdit->setDateTime(QDateTime(QDate(2014, 1, 1), QTime(0, 0, 0)));
-        dateEdit->setMaximumDateTime(QDateTime(QDate(8000, 1, 9), QTime(23, 59, 59)));
+        dateEdit->setMaximumDateTime(QDateTime(QDate(8000, 1, 10), QTime(23, 59, 59)));
         dateEdit->setDisplayFormat(QString::fromUtf8("yyyy-MM-dd"));
         dateEdit->setCalendarPopup(true);
         dateEdit->setDate(QDate(2014, 1, 1));

@@ -66,7 +66,7 @@ private slots:
 
     void imprimirReciboTabla2(void);
 
-    void imprimirReciboTablaOtros(void);
+    //void imprimirReciboTablaOtros(void);
 
     void on_pushButtonRegPago_clicked();
 
