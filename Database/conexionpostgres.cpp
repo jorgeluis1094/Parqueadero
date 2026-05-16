@@ -19,3 +19,25 @@ bool ConexionPostgres::conectar() {
 void ConexionPostgres::cerrar() {
     m_db.close();
 }
+
+bool ConexionPostgres::actualizarEstadoLicenciaLocal(bool estado) {
+    QSqlQuery query;
+    query.prepare("UPDATE control_licencia SET ultimo_check = :ahora, estado_local = :estado WHERE id_licencia = 1");
+    query.bindValue(":ahora", QDateTime::currentDateTime());
+    query.bindValue(":estado", estado);
+    return query.exec();
+}
+
+bool ConexionPostgres::esLicenciaValidaOffline(int horasMaximas) {
+    QSqlQuery query("SELECT ultimo_check, estado_local FROM control_licencia WHERE id_licencia = 1");
+    if (query.next()) {
+        QDateTime ultimoCheck = query.value(0).toDateTime();
+        bool estadoLocal = query.value(1).toBool();
+
+        if (!estadoLocal) return false;
+
+        qint64 horasDesdeUltimoCheck = ultimoCheck.secsTo(QDateTime::currentDateTime()) / 3600;
+        return (horasDesdeUltimoCheck <= horasMaximas);
+    }
+    return false;
+}

@@ -238,7 +238,7 @@
           <item>
            <widget class="QCheckBox" name="cbRegEntrada">
             <property name="text">
-             <string>Tabla de Registros Entrada:</string>
+             <string>Registros Entrada</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -283,7 +283,7 @@
           <item>
            <widget class="QCheckBox" name="cbRegSalida">
             <property name="text">
-             <string>Tabla de Registros de Salida:</string>
+             <string>Registros de Salida</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -307,6 +307,27 @@
             <attribute name="horizontalHeaderDefaultSectionSize">
              <number>160</number>
             </attribute>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QCheckBox" name="cbDetalleCaja">
+            <property name="text">
+             <string>Detalle Caja</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTableView" name="twDetalleCaja">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
          </layout>
@@ -690,7 +711,7 @@
                   <second>59</second>
                   <year>8000</year>
                   <month>1</month>
-                  <day>10</day>
+                  <day>11</day>
                  </datetime>
                 </property>
                 <property name="displayFormat">
@@ -1036,6 +1057,22 @@
     <hint type="destinationlabel">
      <x>230</x>
      <y>598</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cbDetalleCaja</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>twDetalleCaja</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>392</x>
+     <y>489</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>392</x>
+     <y>553</y>
     </hint>
    </hints>
   </connection>

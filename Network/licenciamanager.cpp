@@ -5,7 +5,7 @@ LicenciaManager::LicenciaManager(QObject *parent) : QObject(parent) {
 }
 
 void LicenciaManager::solicitarValidacion(QString key, QString hwid) {
-    QUrl url("http://127.0.0.1:8080/validar_licencia");
+    QUrl url("http://127.0.0.1:8000/validar_licencia");
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 

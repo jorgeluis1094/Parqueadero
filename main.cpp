@@ -48,22 +48,30 @@ int main(int argc, char *argv[])
     // El programa se queda aquí hasta que la API responda o el tiempo expire
     loop.exec();
 
-    // 3. Evaluar el resultado
     if (!validacionExitosa) {
-        QMessageBox::warning(nullptr, "Licencia Inválida",
-                             "El sistema no pudo ser validado:\n" + mensajeError);
-        ConexionPostgres::instancia().cerrar();
-        return 0; // Se cierra el programa antes de mostrar la MainWindow
+        // Si la API falló por "Servidor no disponible" (error de red)
+        if (mensajeError == "Servidor central no disponible.") {
+            if (ConexionPostgres::instancia().esLicenciaValidaOffline(24*5)) { // Damos 48h de gracia
+                QMessageBox::information(nullptr, "Modo Offline",
+                                         "Sin conexión al servidor central. Trabajando con caché local (Modo Contingencia).");
+                validacionExitosa = true;
+            } else {
+                QMessageBox::critical(nullptr, "Error de Validación",
+                                      "No hay conexión a internet y el periodo de gracia offline ha expirado. Por favor, conéctese a la red.");
+            }
+        } else {
+            // Si la API respondió pero dijo "DENEGADO" (Licencia vencida o HWID incorrecto)
+            QMessageBox::warning(nullptr, "Acceso Denegado", mensajeError);
+            ConexionPostgres::instancia().actualizarEstadoLicenciaLocal(false);
+        }
+    } else {
+        // Si la validación por API fue exitosa, refrescamos el caché local
+        ConexionPostgres::instancia().actualizarEstadoLicenciaLocal(true);
     }
 
-    // 4. Si todo está OK, mostrar la ventana principal
-    MainWindow w;
-    w.show();
-
-    int resultado = a.exec();
-
-    // Al cerrar el programa, cerrar la conexión a la base de datos
-    ConexionPostgres::instancia().cerrar();
-
-    return resultado;
+    if (validacionExitosa) {
+        MainWindow w;
+        w.show();
+        return a.exec();
+    }
 }

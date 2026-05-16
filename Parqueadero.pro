@@ -13,6 +13,7 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
+    Database/PostgresVehiculoRepository.cpp \
     Database/conexionpostgres.cpp \
     Impresora/PrintManager.cpp \
     Impresora/commands/EscPosBuilder.cpp \
@@ -25,6 +26,7 @@ SOURCES += main.cpp\
     Impresora/receipts/recibopagomensualidadformatter.cpp \
     Impresora/transport/UsbLpTransport.cpp \
     Network/licenciamanager.cpp \
+    Repositorio/vehiculorepository.cpp \
         mainwindow.cpp \
     FuncionesTiempo.cpp \
     ManejoTablas.cpp \
@@ -35,6 +37,9 @@ SOURCES += main.cpp\
     relojdigital.cpp
 
 HEADERS  += mainwindow.h \
+    Database/IVehiculoRepository.h \
+    Database/PostgresVehiculoRepository.h \
+    Database/SessionManager.h \
     Database/conexionpostgres.h \
     FuncioneTiempo.h \
     Impresora/PrintManager.h \
@@ -51,6 +56,7 @@ HEADERS  += mainwindow.h \
     Impresora/transport/UsbLpTransport.h \
     ManejoTablas.h \
     Network/licenciamanager.h \
+    Repositorio/vehiculorepository.h \
     TipoPersona/persona.h \
     TipoPersona/operario.h \
     TipoPersona/clientemensualidad.h \

@@ -37,11 +37,6 @@ public:
     int getRecargoSalida(void);
     double getCantidad(void);
 
-
-
-
-
-
 private:
     QString placa;
     QString tipoVehiculo;

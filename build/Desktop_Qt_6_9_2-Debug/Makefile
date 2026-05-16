@@ -53,6 +53,7 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = ../../main.cpp \
+		../../Database/PostgresVehiculoRepository.cpp \
 		../../Database/conexionpostgres.cpp \
 		../../Impresora/PrintManager.cpp \
 		../../Impresora/commands/EscPosBuilder.cpp \
@@ -65,6 +66,7 @@ SOURCES       = ../../main.cpp \
 		../../Impresora/receipts/recibopagomensualidadformatter.cpp \
 		../../Impresora/transport/UsbLpTransport.cpp \
 		../../Network/licenciamanager.cpp \
+		../../Repositorio/vehiculorepository.cpp \
 		../../mainwindow.cpp \
 		../../FuncionesTiempo.cpp \
 		../../ManejoTablas.cpp \
@@ -76,6 +78,7 @@ SOURCES       = ../../main.cpp \
 		moc_licenciamanager.cpp \
 		moc_relojdigital.cpp
 OBJECTS       = main.o \
+		PostgresVehiculoRepository.o \
 		conexionpostgres.o \
 		PrintManager.o \
 		EscPosBuilder.o \
@@ -88,6 +91,7 @@ OBJECTS       = main.o \
 		recibopagomensualidadformatter.o \
 		UsbLpTransport.o \
 		licenciamanager.o \
+		vehiculorepository.o \
 		mainwindow.o \
 		FuncionesTiempo.o \
 		ManejoTablas.o \
@@ -337,6 +341,9 @@ DIST          = /opt/Qt/6.9.2/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/Qt/6.9.2/gcc_64/mkspecs/features/yacc.prf \
 		/opt/Qt/6.9.2/gcc_64/mkspecs/features/lex.prf \
 		../../../../Parqueadero.pro ../../mainwindow.h \
+		../../Database/IVehiculoRepository.h \
+		../../Database/PostgresVehiculoRepository.h \
+		../../Database/SessionManager.h \
 		../../Database/conexionpostgres.h \
 		../../FuncioneTiempo.h \
 		../../Impresora/PrintManager.h \
@@ -353,6 +360,7 @@ DIST          = /opt/Qt/6.9.2/gcc_64/mkspecs/features/spec_pre.prf \
 		../../Impresora/transport/UsbLpTransport.h \
 		../../ManejoTablas.h \
 		../../Network/licenciamanager.h \
+		../../Repositorio/vehiculorepository.h \
 		../../TipoPersona/persona.h \
 		../../TipoPersona/operario.h \
 		../../TipoPersona/clientemensualidad.h \
@@ -362,6 +370,7 @@ DIST          = /opt/Qt/6.9.2/gcc_64/mkspecs/features/spec_pre.prf \
 		../../domain/reciboentrada.h \
 		../../domain/recibomensualidad.h \
 		../../relojdigital.h ../../main.cpp \
+		../../Database/PostgresVehiculoRepository.cpp \
 		../../Database/conexionpostgres.cpp \
 		../../Impresora/PrintManager.cpp \
 		../../Impresora/commands/EscPosBuilder.cpp \
@@ -374,6 +383,7 @@ DIST          = /opt/Qt/6.9.2/gcc_64/mkspecs/features/spec_pre.prf \
 		../../Impresora/receipts/recibopagomensualidadformatter.cpp \
 		../../Impresora/transport/UsbLpTransport.cpp \
 		../../Network/licenciamanager.cpp \
+		../../Repositorio/vehiculorepository.cpp \
 		../../mainwindow.cpp \
 		../../FuncionesTiempo.cpp \
 		../../ManejoTablas.cpp \
@@ -897,8 +907,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /opt/Qt/6.9.2/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../../mainwindow.h ../../Database/conexionpostgres.h ../../FuncioneTiempo.h ../../Impresora/PrintManager.h ../../Impresora/commands/EscPosBuilder.h ../../Impresora/config/printconfig.h ../../Impresora/output/PrintDevice.h ../../Impresora/receipts/CierreCajaFormatter.h ../../Impresora/receipts/ReceiptFormatter.h ../../Impresora/receipts/ReciboEntradaFormatter.h ../../Impresora/receipts/ReciboSalidaFormatter.h ../../Impresora/receipts/reciboProductosFormatter.h ../../Impresora/receipts/recibopagomensualidadformatter.h ../../Impresora/transport/ITransport.h ../../Impresora/transport/UsbLpTransport.h ../../ManejoTablas.h ../../Network/licenciamanager.h ../../TipoPersona/persona.h ../../TipoPersona/operario.h ../../TipoPersona/clientemensualidad.h ../../TipoVehiculos/vehiculo.h ../../domain/cierrecaja.h ../../domain/reciboProductos.h ../../domain/reciboentrada.h ../../domain/recibomensualidad.h ../../relojdigital.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../../main.cpp ../../Database/conexionpostgres.cpp ../../Impresora/PrintManager.cpp ../../Impresora/commands/EscPosBuilder.cpp ../../Impresora/config/printconfig.cpp ../../Impresora/output/PrintDevice.cpp ../../Impresora/receipts/CierreCajaFormatter.cpp ../../Impresora/receipts/ReceiptFormatter.cpp ../../Impresora/receipts/ReciboEntradaFormatter.cpp ../../Impresora/receipts/reciboProdutosFormatter.cpp ../../Impresora/receipts/recibopagomensualidadformatter.cpp ../../Impresora/transport/UsbLpTransport.cpp ../../Network/licenciamanager.cpp ../../mainwindow.cpp ../../FuncionesTiempo.cpp ../../ManejoTablas.cpp ../../TipoPersona/persona.cpp ../../TipoPersona/operario.cpp ../../TipoPersona/clientemensualidad.cpp ../../TipoVehiculos/vehiculo.cpp ../../relojdigital.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../../mainwindow.h ../../Database/IVehiculoRepository.h ../../Database/PostgresVehiculoRepository.h ../../Database/SessionManager.h ../../Database/conexionpostgres.h ../../FuncioneTiempo.h ../../Impresora/PrintManager.h ../../Impresora/commands/EscPosBuilder.h ../../Impresora/config/printconfig.h ../../Impresora/output/PrintDevice.h ../../Impresora/receipts/CierreCajaFormatter.h ../../Impresora/receipts/ReceiptFormatter.h ../../Impresora/receipts/ReciboEntradaFormatter.h ../../Impresora/receipts/ReciboSalidaFormatter.h ../../Impresora/receipts/reciboProductosFormatter.h ../../Impresora/receipts/recibopagomensualidadformatter.h ../../Impresora/transport/ITransport.h ../../Impresora/transport/UsbLpTransport.h ../../ManejoTablas.h ../../Network/licenciamanager.h ../../Repositorio/vehiculorepository.h ../../TipoPersona/persona.h ../../TipoPersona/operario.h ../../TipoPersona/clientemensualidad.h ../../TipoVehiculos/vehiculo.h ../../domain/cierrecaja.h ../../domain/reciboProductos.h ../../domain/reciboentrada.h ../../domain/recibomensualidad.h ../../relojdigital.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../../main.cpp ../../Database/PostgresVehiculoRepository.cpp ../../Database/conexionpostgres.cpp ../../Impresora/PrintManager.cpp ../../Impresora/commands/EscPosBuilder.cpp ../../Impresora/config/printconfig.cpp ../../Impresora/output/PrintDevice.cpp ../../Impresora/receipts/CierreCajaFormatter.cpp ../../Impresora/receipts/ReceiptFormatter.cpp ../../Impresora/receipts/ReciboEntradaFormatter.cpp ../../Impresora/receipts/reciboProdutosFormatter.cpp ../../Impresora/receipts/recibopagomensualidadformatter.cpp ../../Impresora/transport/UsbLpTransport.cpp ../../Network/licenciamanager.cpp ../../Repositorio/vehiculorepository.cpp ../../mainwindow.cpp ../../FuncionesTiempo.cpp ../../ManejoTablas.cpp ../../TipoPersona/persona.cpp ../../TipoPersona/operario.cpp ../../TipoPersona/clientemensualidad.cpp ../../TipoVehiculos/vehiculo.cpp ../../relojdigital.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../../mainwindow.ui $(DISTDIR)/
 
 
@@ -1188,6 +1198,10 @@ moc_mainwindow.cpp: ../../mainwindow.h \
 		../../Impresora/receipts/CierreCajaFormatter.h \
 		../../domain/cierrecaja.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/QMap \
+		../../Database/SessionManager.h \
+		../../Database/PostgresVehiculoRepository.h \
+		../../Database/IVehiculoRepository.h \
+		../../Repositorio/vehiculorepository.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport/QPrinter \
 		/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport/qprinter.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport/qtprintsupportglobal.h \
@@ -2217,6 +2231,10 @@ main.o: ../../main.cpp /opt/Qt/6.9.2/gcc_64/include/QtWidgets/QApplication \
 		../../Impresora/receipts/CierreCajaFormatter.h \
 		../../domain/cierrecaja.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/QMap \
+		../../Database/SessionManager.h \
+		../../Database/PostgresVehiculoRepository.h \
+		../../Database/IVehiculoRepository.h \
+		../../Repositorio/vehiculorepository.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport/QPrinter \
 		/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport/qprinter.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport/qtprintsupportglobal.h \
@@ -2419,6 +2437,150 @@ main.o: ../../main.cpp /opt/Qt/6.9.2/gcc_64/include/QtWidgets/QApplication \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/QTextStream
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../../main.cpp
 
+PostgresVehiculoRepository.o: ../../Database/PostgresVehiculoRepository.cpp ../../Database/PostgresVehiculoRepository.h \
+		../../Database/IVehiculoRepository.h \
+		../../TipoVehiculos/vehiculo.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QString \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstring.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qchar.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qglobal.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtcoreglobal.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtversionchecks.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtconfiginclude.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qconfig.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtcore-config.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtconfigmacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtdeprecationdefinitions.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcompilerdetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qprocessordetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsystemdetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtcoreexports.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtdeprecationmarkers.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtclasshelpermacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtpreprocessorsupport.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qassert.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtnoop.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtypes.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtversion.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtypeinfo.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontainerfwd.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsysinfo.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlogging.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qflags.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcompare_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qatomic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbasicatomic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qgenericatomic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qyieldcpu.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qconstructormacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdarwinhelpers.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qexceptionhandling.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qforeach.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qttypetraits.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qfunctionpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qglobalstatic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmalloc.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qminmax.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qnumeric.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qoverload.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qswap.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtenvironmentvariables.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtresource.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qttranslation.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qversiontagging.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcompare.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstdlibdetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcomparehelpers.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20type_traits.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearray.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qrefcount.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qnamespace.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtmetamacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qarraydata.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qpair.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qarraydatapointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qarraydataops.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontainertools_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qxptype_traits.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20functional.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20memory.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q17memory.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearrayalgorithms.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearrayview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringfwd.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringliteral.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringalgorithms.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlatin1stringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qanystringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qutf8stringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringtokenizer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringbuilder.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringconverter.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringconverter_base.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QDate \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdatetime.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcalendar.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlocale.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qvariant.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmetatype.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdatastream.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qscopedpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qiodevicebase.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qfloat16.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qhashfunctions.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmath.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qalgorithms.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtformat_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qiterable.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmetacontainer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontainerinfo.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtaggedpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qobjectdefs.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qfunctionaltools_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qscopeguard.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdebug.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtextstream.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontiguouscache.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsharedpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qshareddata.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlist.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qiterator.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearraylist.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringlist.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringmatcher.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmap.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qshareddata_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qset.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qhash.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qvarlengtharray.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q23utility.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20utility.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qobject.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcoreevent.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbasictimer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qeventloop.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdeadlinetimer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qelapsedtimer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qobject_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbindingstorage.h \
+		../../Database/SessionManager.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/QSqlQuery \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/qsqlquery.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/qtsqlglobal.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/qtsql-config.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/qtsqlexports.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/qsqldatabase.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmetaobject.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/QSqlError \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/qsqlerror.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QDebug
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o PostgresVehiculoRepository.o ../../Database/PostgresVehiculoRepository.cpp
+
 conexionpostgres.o: ../../Database/conexionpostgres.cpp ../../Database/conexionpostgres.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtSql/QSqlDatabase \
 		/opt/Qt/6.9.2/gcc_64/include/QtSql/qsqldatabase.h \
@@ -2551,7 +2713,13 @@ conexionpostgres.o: ../../Database/conexionpostgres.cpp ../../Database/conexionp
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbindingstorage.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtSql/QSqlError \
 		/opt/Qt/6.9.2/gcc_64/include/QtSql/qsqlerror.h \
-		/opt/Qt/6.9.2/gcc_64/include/QtCore/QDebug
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QDebug \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/QSqlQuery \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/qsqlquery.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QDateTime \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdatetime.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcalendar.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlocale.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o conexionpostgres.o ../../Database/conexionpostgres.cpp
 
 PrintManager.o: ../../Impresora/PrintManager.cpp ../../Impresora/PrintManager.h \
@@ -4109,6 +4277,146 @@ licenciamanager.o: ../../Network/licenciamanager.cpp ../../Network/licenciamanag
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/qjsonobject.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o licenciamanager.o ../../Network/licenciamanager.cpp
 
+vehiculorepository.o: ../../Repositorio/vehiculorepository.cpp ../../Repositorio/vehiculorepository.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QString \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstring.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qchar.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qglobal.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtcoreglobal.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtversionchecks.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtconfiginclude.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qconfig.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtcore-config.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtconfigmacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtdeprecationdefinitions.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcompilerdetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qprocessordetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsystemdetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtcoreexports.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtdeprecationmarkers.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtclasshelpermacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtpreprocessorsupport.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qassert.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtnoop.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtypes.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtversion.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtypeinfo.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontainerfwd.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsysinfo.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlogging.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qflags.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcompare_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qatomic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbasicatomic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qgenericatomic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qyieldcpu.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qconstructormacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdarwinhelpers.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qexceptionhandling.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qforeach.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qttypetraits.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qfunctionpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qglobalstatic.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmalloc.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qminmax.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qnumeric.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qoverload.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qswap.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtenvironmentvariables.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtresource.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qttranslation.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qversiontagging.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcompare.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstdlibdetection.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcomparehelpers.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20type_traits.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearray.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qrefcount.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qnamespace.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtmetamacros.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qarraydata.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qpair.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qarraydatapointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qarraydataops.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontainertools_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qxptype_traits.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20functional.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20memory.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q17memory.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearrayalgorithms.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearrayview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringfwd.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringliteral.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringalgorithms.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlatin1stringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qanystringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qutf8stringview.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringtokenizer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringbuilder.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringconverter.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringconverter_base.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/QSqlQuery \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/qsqlquery.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/qtsqlglobal.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/qtsql-config.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/qtsqlexports.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtSql/qsqldatabase.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmetaobject.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qobjectdefs.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qfunctionaltools_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qvariant.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmetatype.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdatastream.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qscopedpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qiodevicebase.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qfloat16.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qhashfunctions.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmath.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qalgorithms.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtformat_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qiterable.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmetacontainer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontainerinfo.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtaggedpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qscopeguard.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdebug.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qtextstream.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcontiguouscache.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsharedpointer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qshareddata.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlist.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qiterator.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbytearraylist.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringlist.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qstringmatcher.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qmap.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qshareddata_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qset.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qhash.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qvarlengtharray.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q23utility.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/q20utility.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qobject.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcoreevent.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbasictimer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qeventloop.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdeadlinetimer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qelapsedtimer.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qobject_impl.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qbindingstorage.h \
+		../../TipoVehiculos/vehiculo.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/QDate \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qdatetime.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qcalendar.h \
+		/opt/Qt/6.9.2/gcc_64/include/QtCore/qlocale.h \
+		../../Database/SessionManager.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o vehiculorepository.o ../../Repositorio/vehiculorepository.cpp
+
 mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/QMainWindow \
 		/opt/Qt/6.9.2/gcc_64/include/QtWidgets/qmainwindow.h \
@@ -4363,6 +4671,10 @@ mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		../../Impresora/receipts/CierreCajaFormatter.h \
 		../../domain/cierrecaja.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtCore/QMap \
+		../../Database/SessionManager.h \
+		../../Database/PostgresVehiculoRepository.h \
+		../../Database/IVehiculoRepository.h \
+		../../Repositorio/vehiculorepository.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport/QPrinter \
 		/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport/qprinter.h \
 		/opt/Qt/6.9.2/gcc_64/include/QtPrintSupport/qtprintsupportglobal.h \

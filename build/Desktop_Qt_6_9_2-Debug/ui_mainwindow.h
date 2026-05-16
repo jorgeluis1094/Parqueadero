@@ -75,6 +75,9 @@ public:
     QVBoxLayout *verticalLayout_13;
     QCheckBox *cbRegSalida;
     QTableView *tableViewRegVeh;
+    QVBoxLayout *verticalLayout_2;
+    QCheckBox *cbDetalleCaja;
+    QTableView *twDetalleCaja;
     QWidget *tab_2;
     QHBoxLayout *horizontalLayout_3;
     QTabWidget *tabWidgetRegPago;
@@ -394,6 +397,24 @@ public:
 
         verticalLayout_14->addLayout(verticalLayout_13);
 
+        verticalLayout_2 = new QVBoxLayout();
+        verticalLayout_2->setSpacing(6);
+        verticalLayout_2->setObjectName("verticalLayout_2");
+        cbDetalleCaja = new QCheckBox(Ingreso);
+        cbDetalleCaja->setObjectName("cbDetalleCaja");
+        cbDetalleCaja->setChecked(true);
+
+        verticalLayout_2->addWidget(cbDetalleCaja);
+
+        twDetalleCaja = new QTableView(Ingreso);
+        twDetalleCaja->setObjectName("twDetalleCaja");
+        twDetalleCaja->setEnabled(true);
+
+        verticalLayout_2->addWidget(twDetalleCaja);
+
+
+        verticalLayout_14->addLayout(verticalLayout_2);
+
         tabWidget->addTab(Ingreso, QString());
         tab_2 = new QWidget();
         tab_2->setObjectName("tab_2");
@@ -703,7 +724,7 @@ public:
         sizePolicy.setHeightForWidth(dateEdit->sizePolicy().hasHeightForWidth());
         dateEdit->setSizePolicy(sizePolicy);
         dateEdit->setDateTime(QDateTime(QDate(2014, 1, 1), QTime(0, 0, 0)));
-        dateEdit->setMaximumDateTime(QDateTime(QDate(8000, 1, 10), QTime(23, 59, 59)));
+        dateEdit->setMaximumDateTime(QDateTime(QDate(8000, 1, 11), QTime(23, 59, 59)));
         dateEdit->setDisplayFormat(QString::fromUtf8("yyyy-MM-dd"));
         dateEdit->setCalendarPopup(true);
         dateEdit->setDate(QDate(2014, 1, 1));
@@ -882,6 +903,7 @@ public:
         retranslateUi(MainWindow);
         QObject::connect(cbRegEntrada, &QCheckBox::clicked, tableInOutCar, &QTableView::setVisible);
         QObject::connect(cbRegSalida, &QCheckBox::clicked, tableViewRegVeh, &QTableView::setVisible);
+        QObject::connect(cbDetalleCaja, &QCheckBox::clicked, twDetalleCaja, &QTableView::setVisible);
 
         tabWidget->setCurrentIndex(0);
         tabWidgetRegPago->setCurrentIndex(0);
@@ -906,8 +928,9 @@ public:
         rB_Normal->setText(QCoreApplication::translate("MainWindow", "Normal", nullptr));
         rB_Lavada1->setText(QCoreApplication::translate("MainWindow", "Lavada 1", nullptr));
         rB_Lavada2->setText(QCoreApplication::translate("MainWindow", "Lavada 2", nullptr));
-        cbRegEntrada->setText(QCoreApplication::translate("MainWindow", "Tabla de Registros Entrada:", nullptr));
-        cbRegSalida->setText(QCoreApplication::translate("MainWindow", "Tabla de Registros de Salida:", nullptr));
+        cbRegEntrada->setText(QCoreApplication::translate("MainWindow", "Registros Entrada", nullptr));
+        cbRegSalida->setText(QCoreApplication::translate("MainWindow", "Registros de Salida", nullptr));
+        cbDetalleCaja->setText(QCoreApplication::translate("MainWindow", "Detalle Caja", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(Ingreso), QCoreApplication::translate("MainWindow", "Ingreso Vehiculos", nullptr));
         label_10->setText(QCoreApplication::translate("MainWindow", "Buscar", nullptr));
         label_12->setText(QCoreApplication::translate("MainWindow", "Valor a registrar", nullptr));

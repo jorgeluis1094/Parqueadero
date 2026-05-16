@@ -4,6 +4,8 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QDebug>
+#include <QSqlQuery>
+#include <QDateTime>
 
 class ConexionPostgres {
 public:
@@ -15,10 +17,14 @@ public:
     bool conectar();
     void cerrar();
     QSqlDatabase db() const { return m_db; }
+    bool actualizarEstadoLicenciaLocal(bool estado);
+    bool esLicenciaValidaOffline(int horasMaximas = 24*5);
+
 
 private:
     ConexionPostgres() = default;
     QSqlDatabase m_db;
+
 };
 
 #endif // CONEXIONPOSTGRES_H

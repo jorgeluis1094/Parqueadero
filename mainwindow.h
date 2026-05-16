@@ -13,6 +13,10 @@
 #include "Impresora/config/printconfig.h"
 #include "Impresora/PrintManager.h"
 
+#include "Database/SessionManager.h"
+#include "Database/PostgresVehiculoRepository.h"
+#include "Repositorio/vehiculorepository.h"
+
 #include <QPainter>
 #include <QPrinter>
 #include <QtSql>
@@ -40,7 +44,6 @@ public:
     QString seg2time(double seg, double &ValorAPagar);
     void NuevoOperario(QString Nombre, bool Registrado);
     void RefrescarTablas();
-    void CrearTablas();
     void ConectarTablas();
     void initInterfaz();
 
@@ -49,6 +52,9 @@ public:
     ReciboProductos structVentaProductos;
     CierreCaja cierre;
     PrintManager pm;
+
+    //PostgresVehiculoRepository *repoVehiculo;
+    VehiculoRepository *repoVehiculo;
 
 private slots:
 
@@ -83,7 +89,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QSqlDatabase  db;
-    QSqlTableModel *modelUno, *modelDos,*modelTres, *modeloTablaProductos;
+    QSqlTableModel *modelUno, *modelDos,*modelTres, *modeloTablaProductos, *modeloTablaCaja;
     QFile File;
     QTextStream out;
     QString TipoVehiculo;
@@ -129,6 +135,8 @@ private:
 
     QVector<QString> VecTipoVeh;
 
+
+    void verificarSesionActiva();
 
 
 };

@@ -5,61 +5,56 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-
     ui->setupUi(this);
 
-    QString nombreDB;
-    nombreDB.append("/opt/Parqueadero/DB/dbParqueadero.sqlite");
-
-    db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(nombreDB);
-
-    if( db.open() )
-    {
-       qDebug()<<"se ha conectado a la DB";
-       //CrearTablas();
-       ConectarTablas();
-    }
-    else
-    {
-        qDebug()<<"Error no se a conectado a la DB";
-    }
-
     QObject::connect(ui->pushButtonRegInOut, SIGNAL(clicked()),this, SLOT(on_lineEditRegInOut_returnPressed()));
-    //QObject::connect(ui->lineEditCantOtrosArt,SIGNAL(returnPressed()), this, SLOT(on_lineEditOtrosVeh_returnPressed()));
     QObject::connect(ui->actionLogin,SIGNAL(triggered(bool)), this, SLOT(on_pushButtonLogin_clicked()));
     QObject::connect(ui->actionEntrega,SIGNAL(triggered(bool)), this, SLOT(on_pushButtonEntrega_clicked()));
     QObject::connect(ui->tableViewRegVeh,SIGNAL(doubleClicked(QModelIndex)), this, SLOT(on_tableInOutCar_doubleClicked(QModelIndex)) );
-    //QObject::connect(ui->tableViewOtros,SIGNAL(doubleClicked(QModelIndex)), this, SLOT(on_tableInOutCar_doubleClicked(QModelIndex)) );
     QObject::connect(ui->tableViewRegPago,SIGNAL(doubleClicked(QModelIndex)), this, SLOT(on_tableInOutCar_doubleClicked(QModelIndex)) );
 
+    QSqlQuery query("SELECT id_operario, nombre FROM operarios WHERE registrado = '1' LIMIT 1");
 
-//verifica si hay operario trabajando para registrar
-    QSqlQuery query;
-    query.exec("SELECT Nombre FROM Operarios WHERE Registrado ='1'");
-    query.next();
-    OperarioTurno = query.value(0).toString();
-    if( OperarioTurno != "")
-    {
+    if(query.next()){
+        int idEncontrado = query.value(0).toInt();
+        QString operarioEncontrado = query.value(1).toString();
+
+        // 1. Iniciamos la sesión en el Singleton para que todo el programa sepa quién es
+        SessionManager::instance().login(idEncontrado, operarioEncontrado);
+
+        // 2. Ajustamos la Interfaz
         ui->actionLogin->setVisible(false);
         ui->actionEntrega->setVisible(true);
-
     }
-    else
-    {
+    else{
         ui->actionLogin->setVisible(true);
         ui->actionEntrega->setVisible(false);
+        SessionManager::instance().logout(); // Aseguramos que esté limpio
     }
-    query.exec("SELECT Moto, `Valor Maximo Moto`, `Moto-Lavada-1`, `Moto-Lavada-2` FROM Precios");
-    query.next();
-    valorHoraMoto=query.value(0).toInt();
-    valorMaxPagar=query.value(1).toInt();
-    valorLavada1=query.value(2).toInt();
-    valorLavada2=query.value(3).toInt();
 
+
+    // Seleccionamos la clave y el valor de la tabla
+    if (query.exec("SELECT clave, valor FROM tarifas")) {
+        while (query.next()) {
+            QString clave = query.value(0).toString();
+            int valor = query.value(1).toInt();
+
+            if (clave == "hora_moto") {
+                valorHoraMoto = valor;
+            } else if (clave == "valor_maximo_moto") {
+                valorMaxPagar = valor;
+            } else if (clave == "lavada_1") {
+                valorLavada1 = valor;
+            } else if (clave == "lavada_2") {
+                valorLavada2 = valor;
+            }
+        }
+    } else {
+        qDebug() << "Error al cargar tarifas:" << query.lastError().text();
+    }
 
     ui->dateEdit->setDate(QDate::currentDate());
-    impCopia=false;
+    //impCopia=false;
 
     VecTipoVeh.push_back("Moto");
     VecTipoVeh.push_back("Moto-Lavada_1");
@@ -68,13 +63,11 @@ MainWindow::MainWindow(QWidget *parent) :
     initInterfaz();
 
     // Cargar configuración de impresión
-    PrintConfig::instance().load( "../../Impresora/config/" );
+    PrintConfig::instance().load("../../Impresora/config/");
 
-
-    //ciboMensualidad structMensualidad;
-
+    //repoVehiculo = new PostgresVehiculoRepository();
+    repoVehiculo = new VehiculoRepository();
 }
-
 
 MainWindow::~MainWindow()
 {
@@ -83,35 +76,13 @@ MainWindow::~MainWindow()
     delete modelDos;
     delete modelTres;
     delete modeloTablaProductos;
+    delete modeloTablaCaja;
 }
 
-void MainWindow::CrearTablas()
-{
- /*       QSqlQuery query;
-        //Se crean las Tablas
-        query.exec("CREATE TABLE IF NOT EXISTS Mensualidades (`Nombre Cliente` VARCHAR(30), Direccion  VARCHAR(30), telefono VARCHAR(15),`Placa Vehiculo` VARCHAR(8), Pago INT, `Inicio Mensualida` DATE, `Fin Mensualidad` DATE, `Fecha de Pago` DATE, `Registrado Por:` VARCHAR(30));");
-        query.exec("CREATE TABLE IF NOT EXISTS EntradaVehiculos (Placa VARCHAR(30), Entrada DATETIME, Reg_Ingreso VARCHAR(30),Tipo VARCHAR(30),`Valor Hora` INT);");
-        query.exec("CREATE TABLE IF NOT EXISTS RegVehiculos (Placa VARCHAR(20),Entrada DATETIME,Salida DATETIME, Pago INT, Reg_Ingreso VARCHAR(30), Reg_Salida VARCHAR(30),Tipo VARCHAR(30), Tiempo_Total VARCHAR(30));");
-        query.exec("CREATE TABLE IF NOT EXISTS TablaOtrosVeh (`Propietario del Articulo` VARCHAR(30),Entrada DATETIME, `Recargo Entrada` INT, Salida DATETIME,`Recargo Salida` INT,Pago INT, Reg_Ingreso VARCHAR(30),Reg_Salida VARCHAR(30),Tipo VARCHAR(20),Tiempo_Total VARCHAR(11) ,Cantidad DECIMAL(5,2));");
-        query.exec("CREATE TABLE IF NOT EXISTS Entregas(Operario VARCHAR(30),Entrada DATETIME ,Salida DATETIME, Entrega INT);");
-        query.exec("CREATE TABLE IF NOT EXISTS Operarios(Nombre VARCHAR(30), Registrado tinyint);");
-        query.exec("CREATE TABLE IF NOT EXISTS TiemposLimites(`Hora Dia` INT, `Minuto Dia` INT, `Hora Noche` INT, `Minuto Noche` INT);");
-        query.exec("CREATE TABLE IF NOT EXISTS Precios(Moto VARCHAR(10), Carro VARCHAR(10), `Otra cosa` VARCHAR(10), `Noche Puesto` VARCHAR(10), `Valor Maximo Moto` VARCHAR(10));");
-
-        query.exec("SELECT count(*) FROM Operarios");
-        query.next();
-        if(query.value(0).toInt() == 0 )
-        {
-            query.exec("INSERT INTO Precios VALUES (500,1500,1500,1500,2000); ");
-            query.exec("INSERT INTO TiemposLimites VALUES (10,30,19,00);");
-            query.exec("INSERT INTO Operarios VALUES ('Jorge',0);");
-        }
-*/
-}
 
 void MainWindow::ConectarTablas()
 {
-
+/*
     modelUno = new QSqlTableModel(0,db);
     modelUno->setTable("Mensualidades");
     modelUno->select();
@@ -131,40 +102,38 @@ void MainWindow::ConectarTablas()
     modeloTablaProductos->setTable("Productos");
     modeloTablaProductos->select();
     ui->tW_Producto_Sel->setModel(modeloTablaProductos);
+*/
+
+    modelUno = new QSqlTableModel(this);
+    modelUno->setTable("mensualidades");
+    modelUno->select();
+    ui->tableView->setModel(modelUno);
+
+    modelDos = new QSqlTableModel(this);
+    modelDos->setTable("estacionamiento_activo");
+    modelDos->select();
+    ui->tableInOutCar->setModel(modelDos);
+
+    modelTres = new QSqlTableModel(this);
+    modelTres->setTable("registro_salidas");
+    modelTres->select();
+    ui->tableViewRegVeh->setModel(modelTres);
+
+    modeloTablaProductos = new QSqlTableModel(this);
+    modeloTablaProductos->setTable("productos");
+    modeloTablaProductos->select();
+    ui->tW_Producto_Sel->setModel(modeloTablaProductos);
+
+    modeloTablaCaja = new QSqlTableModel(this);
+    modeloTablaCaja->setTable("transacciones_caja");
+    modeloTablaCaja->select();
+    ui->twDetalleCaja->setModel(modeloTablaCaja);
 
 }
-/*
-void MainWindow::imprimir(int tipoRecibo)
-{
-
-    // Crear una QPageLayout
-    QPageLayout pageLayout;
-
-    // Definir un tamaño de papel personalizado para la impresora térmica Epson T20
-    // Supongamos que el tamaño del papel es 80 mm de ancho y 200 mm de alto
-    QPageSize customPageSize(QSizeF(80, 200), QPageSize::Millimeter);
-    pageLayout.setPageSize(customPageSize);
-
-    // Establecer las márgenes de la página
-    QMarginsF margins(1.0, 1.0, 1.0, 1.0); // Márgenes en puntos (10 puntos en cada lado)
-    pageLayout.setMargins(margins);
-
-
-    QPrinter printer(printer.HighResolution);
-    printer.setColorMode(printer.Color);
-    QSizeF tamPaper(70,150);
-
-    // Aplicar la configuración de la página al QPrinter
-    printer.setPageLayout(pageLayout);
-
-    //printer.setPageMargins(1,1,1,1,QPrinter::Millimeter); //Modificar
-    //printer.setPaperSize(tamPaper,QPrinter::Millimeter);  //Modificar
-    //printDocument(&printer, tipoRecibo);
-}*/
 
 void MainWindow::on_pushButtonRegistrar_clicked()//Registra una mensualidad
 {
-    if (OperarioTurno != "")
+    if (SessionManager::instance().estaLogueado())
     {
             QDateTime fechaActual = QDateTime();
             QSqlQuery query;
@@ -185,21 +154,21 @@ void MainWindow::on_pushButtonRegistrar_clicked()//Registra una mensualidad
 
                 qDebug()<<"INSERT INTO Mensualidades "
                                "(Placa, Casillero, Nombre, Telefono, Direccion, Inicio, Fin, Fecha_Pago, Valor, Registro)"
-                               "VALUES ( '"+placa+"' , '"+casillero+"' , '"+nombre+"' , '"+telefono+"' , '"+direccion+"' , '"+fechaInicio+"' , datetime('" + fechaInicio + "', '+30 days') , strftime('%Y-%m-%d %H:%M:%S', 'now','localtime') , '"+valorPago+"', '"+OperarioTurno+"')";
+                               "VALUES ( '"+placa+"' , '"+casillero+"' , '"+nombre+"' , '"+telefono+"' , '"+direccion+"' , '"+fechaInicio+"' , datetime('" + fechaInicio + "', '+30 days') , strftime('%Y-%m-%d %H:%M:%S', 'now','localtime') , '"+valorPago+"', '"+SessionManager::instance().usuarioActual()+"')";
 
 
                     query.exec("INSERT INTO Mensualidades "
                                "(Placa, Casillero, Nombre, Telefono, Direccion, Inicio, Fin, Fecha_Pago, Valor, Registro)"
-                               "VALUES ( '"+placa+"' , '"+casillero+"' , '"+nombre+"' , '"+telefono+"' , '"+direccion+"' , '"+fechaInicio+"' , date('" + fechaInicio + "', '+1 month') , strftime('%Y-%m-%d %H:%M:%S', 'now','localtime') , '"+valorPago+"', '"+OperarioTurno+"')");
+                               "VALUES ( '"+placa+"' , '"+casillero+"' , '"+nombre+"' , '"+telefono+"' , '"+direccion+"' , '"+fechaInicio+"' , date('" + fechaInicio + "', '+1 month') , strftime('%Y-%m-%d %H:%M:%S', 'now','localtime') , '"+valorPago+"', '"+SessionManager::instance().usuarioActual()+"')");
 
                     query.exec("INSERT INTO RegVehiculos"
                             "(Placa,Entrada,Salida,Pago,Reg_Ingreso, Reg_Salida, Tipo,Tiempo_Total)"
-                               "VALUES ( '"+placa+"' , strftime('%Y-%m-%d %H:%M:%S', 'now','localtime') , strftime('%Y-%m-%d %H:%M:%S', 'now','localtime') , '"+valorPago+"' , '"+OperarioTurno+"', '"+OperarioTurno+"', 'Moto','Mensualidad')");
+                               "VALUES ( '"+placa+"' , strftime('%Y-%m-%d %H:%M:%S', 'now','localtime') , strftime('%Y-%m-%d %H:%M:%S', 'now','localtime') , '"+valorPago+"' , '"+SessionManager::instance().usuarioActual()+"', '"+SessionManager::instance().usuarioActual()+"', 'Moto','Mensualidad')");
 
-                    vehiculo = new Vehiculo(placa,"Moto",ui->dateEdit->dateTime(),OperarioTurno);
+                    vehiculo = new Vehiculo(placa,"Moto",ui->dateEdit->dateTime(),SessionManager::instance().usuarioActual());
                     //vehiculo->HoraSalida(ui->dateEdit_2->dateTime());
                     vehiculo->ValorPagado(valorPago.toInt());
-                    vehiculo->NomRegOut(OperarioTurno);
+                    vehiculo->NomRegOut(SessionManager::instance().usuarioActual());
                     vehiculo->TipoVehiculo("Moto");
                     vehiculo->Propietario(nombre);
 
@@ -212,7 +181,7 @@ void MainWindow::on_pushButtonRegistrar_clicked()//Registra una mensualidad
                     structMensualidad.finMensualidad = QDate::fromString(fechaInicio, "yyyy-MM-dd").addMonths(1).toString();//;fechaFin.mid(0,10);
                     structMensualidad.tipoVehiculo = "Moto";
                     structMensualidad.pagoRecibido = valorPago;
-                    structMensualidad.operarioParqueadero = OperarioTurno;
+                    structMensualidad.operarioParqueadero = SessionManager::instance().usuarioActual();
 
                     pm.printReciboMensualidad(structMensualidad);
 
@@ -225,171 +194,97 @@ void MainWindow::on_pushButtonRegistrar_clicked()//Registra una mensualidad
         QMessageBox::critical(this, NombreParqueadero,tr("<font size = 15 color = black >Debe Registrarse"));
 }
 
-void MainWindow::on_lineEditRegInOut_returnPressed()//registra la entrada de un usuario de moto o carro
+
+/*+++++++++++++++++++++*/
+void MainWindow::on_lineEditRegInOut_returnPressed()
 {
+    QString placa = ui->lineEditRegInOut->text().toUpper().trimmed();
 
-    if(OperarioTurno=="")
-    {
-        QMessageBox::critical(this, NombreParqueadero,tr("<font size = 15 color = black >Debe Registrarse"));
+    // 1. Validaciones de Interfaz
+    if (!SessionManager::instance().estaLogueado()) {
+        QMessageBox::critical(this, "Error", "Debe iniciar sesión primero.");
+        return;
     }
-    else  if(ui->lineEditRegInOut->text().length() <= 4 ){
-        QMessageBox::warning(this, NombreParqueadero,tr("<font size = 15 color = black >No es placa de moto"));
+    if (placa.length() <= 4) {
+        QMessageBox::warning(this, "Error", "La placa no es válida.");
+        return;
     }
-    else
-    {
-        QSqlQuery query;
-        //Obtiene el dato que esta en el widget de  ingreso de la placa
-        QString Placa = ui->lineEditRegInOut->text().toUpper();
-        QString TipoVeh = "Moto"; //ui->comboBoxVehiculos->currentText();
 
-        //Strings Para Cadena de Caracteres
-        QString Datos;
-        QString Tabla;
-        QString Parametros;
+    // 2. Lógica de Decisión (¿Entra o Sale?)
+    if (repoVehiculo->estaEnParqueadero(placa)) {
+        qDebug()<<"Esta en el parqueadero";
+        // --- LÓGICA DE SALIDA (A implementar luego) ---
+        // Calculamos sin modificar la base de datos
+        InfoCobro cobro = repoVehiculo->calcularCobro(placa);
 
-        QDateTime dateNow;
-        QDateTime horaEntrada;
-        QDateTime horaSalida;
-        QString OpeRegIn;
-        //QString OpeRegOut;
-        QString tim;
-        int valorHora=0;
-        int segT=0;
-        int valoraPagar=0;
-        int Hora=0, Min=0;
-        int consMotoCarro = 0;
-        int consMen = 0;
-
-        //Verificar Si está o No en la Tabla EntradaVehiculos
-        Datos = "count(*)";
-        Tabla = "EntradaVehiculos";
-        Parametros = "Placa='"+Placa+"'";
-        query = RealizarConsulta(Datos,Tabla,Parametros);
-        consMotoCarro = query.value(0).toInt();
-
-        //Verificar Si esta o No en la Tabla Mensualidades
-        Datos = "count(*)";
-        Tabla = "Mensualidades";
-        Parametros = "`Placa Vehiculo`='"+Placa+"'";
-        query = RealizarConsulta(Datos,Tabla,Parametros);
-        consMen = query.value(0).toInt();
-
-        if( consMotoCarro && !consMen) {
-            valorHora=valorHoraMoto;
-
-            //CobrarMoto(valorHora,Placa);
-            //Está Registrado. Se Debe Cobrar
-            Datos="Placa, Ingreso, Operario, Tipo";
-            Tabla="EntradaVehiculos";
-            Parametros="Placa='"+Placa+"'";
-
-            query=RealizarConsulta(Datos,Tabla,Parametros);
-            Placa = query.value(0).toString();
-            horaEntrada = query.value(1).toDateTime();
-            OpeRegIn = query.value(2).toString();
-            TipoVeh = query.value(3).toString();
-            segT = DiferenciaHora(query.value(1).toDateTime(),dateNow);
-            tim= HMS2seg(Hora,Min,segT);
-            valoraPagar=CobroXMotos(Hora,Min,5,valorHora);
-
-            vehiculo = new Vehiculo(Placa,TipoVeh,horaEntrada,OpeRegIn);
-            vehiculo->HoraSalida(horaSalida.currentDateTime());
-            vehiculo->NomRegOut(OperarioTurno);
-            vehiculo->TiempoParqueo(tim);
-            vehiculo->ValorPagado(valoraPagar);
-
-            if (valoraPagar > valorMaxPagar)
-            {
-                int dias = Hora/12;//para cobrar los dias que ha estado guardado
-                Hora=Hora%12;
-
-                if(Hora < valorMaxPagar/valorHora)
-                    vehiculo->ValorPagado(valorMaxPagar*dias+Hora*valorHora);
-                else
-                    vehiculo->ValorPagado(valorMaxPagar*dias);
-            }
-
-            switch (VecTipoVeh.indexOf(TipoVeh)) {
-            case 1:
-                if(Hora < valorMaxPagar/valorHora)
-                    vehiculo->ValorPagado(valoraPagar+valorLavada1-valorHora);
-                else
-                    vehiculo->ValorPagado(valoraPagar+valorLavada1);
-                qDebug()<<"Esto es lavada 1";
-                break;
-            case 2:
-                if(Hora < valorMaxPagar/valorHora)
-                    vehiculo->ValorPagado(valoraPagar+valorLavada2-valorHora);
-                else
-                    vehiculo->ValorPagado(valoraPagar+valorLavada2);
-                qDebug()<<"Esto es lavada 2";
-                break;
-            default:
-                break;
-            }
-
-            QMessageBox::StandardButton reply;
-            reply = QMessageBox::question(this,NombreParqueadero,"<font size = 15 color = black >"+Placa+" debe pagar: $" +QString::number(vehiculo->getValorPagado()),
-                                          QMessageBox::Yes | QMessageBox::No);
-
-
-                if (reply == QMessageBox::Yes && consMotoCarro){
-                    //realizar el cobro
-                    IngresarFilaTabla(1,vehiculo,QString::number(valorHoraMoto));
-                    Tabla="EntradaVehiculos";
-                    Parametros="Placa='"+Placa+"'";
-                    BorrarFilaTabla(Tabla,Parametros);
-                }
-
-
+        if (cobro.montoTotal == 0) {
+            QMessageBox::warning(this, "Error", "No se encontró el vehículo o error en cálculo.");
+            return;
         }
-        else if(consMen){
-            QMessageBox::warning(this, NombreParqueadero,tr("<font size = 15 color = black >Usuario de Mensualidad"));
+
+        // 2. Mostramos el desglose al operario
+        QString mensaje = QString("Placa: %1\n"
+                                  "Ingreso: %2\n"
+                                  "Tiempo: %3h %4m\n\n"
+                                  "TOTAL A COBRAR: $%5")
+                              .arg(placa)
+                              .arg(cobro.fechaIngreso.toString("hh:mm ap"))
+                              .arg(cobro.horas)
+                              .arg(cobro.minutos)
+                              .arg(cobro.montoTotal);
+
+        QMessageBox::StandardButton resp;
+        resp = QMessageBox::question(this, "Confirmar Salida", mensaje,
+                                     QMessageBox::Yes | QMessageBox::No);
+
+        // 3. Si confirma, ejecutamos la transacción real
+        if (resp == QMessageBox::Yes) {
+            int idOp = SessionManager::instance().idActual();
+            QString duracionStr = QString("%1:%2")
+                                      .arg(cobro.horas, 2, 10, QChar('0'))
+                                      .arg(cobro.minutos, 2, 10, QChar('0'));
+
+            if (repoVehiculo->ejecutarSalida(placa, cobro.montoTotal, duracionStr, idOp)) {
+                QMessageBox::information(this, "Éxito", "Venta registrada.");
+                ui->lineEditRegInOut->clear();
+                RefrescarTablas();
+                // ImprimirRecibo(cobro);
+            } else {
+                QMessageBox::critical(this, "Error", "No se pudo completar la transacción.");
+            }
         }
-        else
-        {
-            //No esta Registrado. Se Debe Registrar(Listo)
-            QMessageBox::StandardButton QuesImprRec;
-            QuesImprRec = QMessageBox::question(this,NombreParqueadero,"Registrar Entrada de Vehiculo?",
-                                                   QMessageBox::Yes | QMessageBox::No);
 
-                if (QuesImprRec == QMessageBox::Yes){
-
-                if (ui->rB_Normal->isChecked()){
-                        vehiculo = new Vehiculo(Placa,TipoVeh,dateNow.currentDateTime(),OperarioTurno);
-                        IngresarFilaTabla(0,vehiculo,QString::number(valorHoraMoto));
-                    }
-                else if(ui->rB_Lavada1->isChecked()){
-                    vehiculo = new Vehiculo(Placa,TipoVeh+"-Lavada_1",dateNow.currentDateTime(),OperarioTurno);
-                    IngresarFilaTabla(0,vehiculo,QString::number(valorHoraMoto));
-                }
-                else if(ui->rB_Lavada2->isChecked()){
-                    vehiculo = new Vehiculo(Placa,TipoVeh+"-Lavada_2",dateNow.currentDateTime(),OperarioTurno);
-                    IngresarFilaTabla(0,vehiculo,QString::number(valorHoraMoto));
-                }
-                else
-                    qDebug()<<"Error al ingresar vehiculo";
-
-                ui->rB_Normal->setChecked(true);
-
-                //imprime
-                structEntrada.placa = vehiculo->getPlaca();
-                structEntrada.fechaHora = vehiculo->getHoraEntrada().toString("dd-MM-yyyy hh:mm:ss");//"2025-12-22 18:30";
-                structEntrada.operarioParqueadero = OperarioTurno;
-                structEntrada.tipoVehiculo = vehiculo->getTipoVehiculo();
-
-                pm.printReciboEntrada(structEntrada);
-
-                delete vehiculo;
-
-                }
-              }
-
+        ui->lineEditRegInOut->clear();
     }
+    else if (repoVehiculo->esMensualidadVigente(placa)) {
+        // --- LÓGICA DE MENSUALIDAD ---
+        QMessageBox::information(this, "Mensualidad", "Vehículo reconocido como Mensualidad.");
+        // Aquí podrías registrar la entrada con tarifa 0
+    }
+    else {
+        // --- LÓGICA DE ENTRADA ---
+        if (QMessageBox::question(this, "Entrada", "¿Registrar entrada de: " + placa + "?") == QMessageBox::Yes) {
 
-    RefrescarTablas();
+            QString tipoFinal = "Moto";
+            if (ui->rB_Lavada1->isChecked()) tipoFinal = tipoFinal+"-Lavada_1";
+            else if (ui->rB_Lavada2->isChecked()) tipoFinal = tipoFinal+"-Lavada_2";
 
+            Vehiculo* v = new Vehiculo(placa, tipoFinal, QDateTime::currentDateTime(), SessionManager::instance().usuarioActual());
+
+            if (repoVehiculo->registrarEntrada(v, valorHoraMoto)) {
+                // Preparar ticket e imprimir
+                //enviarImpresionEntrada(v);
+                ui->lineEditRegInOut->clear();
+                RefrescarTablas();
+            } else {
+                QMessageBox::critical(this, "Error", "Error al guardar en base de datos.");
+            }
+            delete v;
+        }
+    }
 }
+/*---------------------*/
+
 
 void MainWindow::on_pushButtonLogin_clicked()//despliega ventana para el login de los operarios
 {
@@ -406,7 +301,7 @@ void MainWindow::on_pushButtonLogin_clicked()//despliega ventana para el login d
 
     //Obtiene el numero de operarios registrados
         QSqlQuery query;
-        query.exec("SELECT * FROM Operarios Where Registrado='0'");
+        query.exec("SELECT nombre FROM operarios Where registrado='0'");
 
         ComBoxNombresOperarios->addItem("");
         while(query.next()){
@@ -420,27 +315,55 @@ void MainWindow::on_pushButtonLogin_clicked()//despliega ventana para el login d
 }
 
 
-void MainWindow::setUsuario(QString Nombre)//actualida los datos para el operario en turno
+void MainWindow::setUsuario(QString Nombre)
 {
+    if(Nombre == "") return;
 
-    if(Nombre != ""){
+    QSqlQuery query;
+    query.prepare("SELECT id_operario FROM operarios WHERE nombre = :nom");
+    query.bindValue(":nom", Nombre);
 
-        QSqlQuery query;
-        query.exec("Update Operarios Set Registrado = '1' where  Nombre= '"+Nombre+"'");
-        OperarioTurno=Nombre;
-        QString HoraEntrada = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+    if(query.exec() && query.next()) {
+        int id = query.value(0).toInt();
 
-        WinLogin->close();
+        // Iniciamos una transacción para asegurar integridad
+        QSqlDatabase::database().transaction();
 
-        ui->actionLogin->setVisible(false);
-        ui->actionEntrega->setVisible(true);
+        bool ok = true;
 
-        query.exec("INSERT INTO Entregas"
-                   "(Operario, Inicio, Fin, Entrega)"
-                   "VALUES('"+OperarioTurno+"','"+HoraEntrada+"','NULL','NULL') ");
+        // 1. Actualizar estado del operario
+        QSqlQuery upd;
+        upd.prepare("UPDATE operarios SET registrado = '1' WHERE id_operario = :id");
+        upd.bindValue(":id", id);
+        if(!upd.exec()) ok = false;
+
+        // 2. CREAR LA SESIÓN EN LA NUEVA TABLA
+        // Esto es vital para que 'obtenerEstadisticasCierre' sepa cuándo empezó el turno
+        QSqlQuery insSesion;
+        insSesion.prepare("INSERT INTO sesiones_operarios (id_operario, fecha_inicio) "
+                          "VALUES (:id, CURRENT_TIMESTAMP)");
+        insSesion.bindValue(":id", id);
+        if(!insSesion.exec()) ok = false;
+
+        if(ok) {
+            QSqlDatabase::database().commit();
+
+            // Login en el Manager con ID y Nombre
+            SessionManager::instance().login(id, Nombre);
+
+            ui->actionLogin->setVisible(false);
+            ui->actionEntrega->setVisible(true);
+
+
+            WinLogin->close();
+        } else {
+            QSqlDatabase::database().rollback();
+            QMessageBox::critical(this, "Error", "No se pudo iniciar la sesión en la base de datos.");
+        }
     }
 }
 
+/*
 void MainWindow::on_pushButtonEntrega_clicked()//realiza la suma del producido y genera el recibo
 {
     QSqlQuery query;
@@ -451,9 +374,9 @@ void MainWindow::on_pushButtonEntrega_clicked()//realiza la suma del producido y
     QString Parametros;
     QString NombreParqueadero;
 
-    Datos = "SUM(Pago)";
-    Tabla = "RegVehiculos";
-    Parametros = "Reg_Salida = '"+OperarioTurno+"'";
+    Datos = "SUM(pago)";
+    Tabla = "reg_vehiculos";
+    Parametros = "id_operario_Salida='"+QString::number(SessionManager::instance().idActual())+"'";
 
     double dinero;
 
@@ -468,100 +391,153 @@ void MainWindow::on_pushButtonEntrega_clicked()//realiza la suma del producido y
 
     if(reply == QMessageBox::Yes){
 
-        DineroTurno = dinero;
-        QString HoraSalida = QDateTime::currentDateTime().toString("yy-MM-dd hh:mm:ss");
+//        DineroTurno = dinero;
+//        QString HoraSalida = QDateTime::currentDateTime().toString("yy-MM-dd hh:mm:ss");
 
-        query.exec("SELECT Inicio FROM Entregas ORDER BY Inicio DESC LIMIT 1");
-        query.next();
-        QDateTime Entrada=query.value(0).toDateTime();
-        QString HoraEntrada = Entrada.toString("yy-MM-dd hh:mm:ss");
+//        query.exec("SELECT Inicio FROM Entregas ORDER BY Inicio DESC LIMIT 1");
+//        query.next();
+//        QDateTime Entrada=query.value(0).toDateTime();
+//        QString HoraEntrada = Entrada.toString("yy-MM-dd hh:mm:ss");
 
-        query.exec("select Sum(Pago) from RegVehiculos where Tiempo_Total='Producto'");
-        query.next();
-        int vpProductos = query.value(0).toInt();
+//        query.exec("select Sum(Pago) from RegVehiculos where Tiempo_Total='Producto'");
+//        query.next();
+//        int vpProductos = query.value(0).toInt();
 
-        query.exec(" select Sum(Pago) from RegVehiculos where Tiempo_Total='Mensualidad'");
-        query.next();
-        int vpMensualidad = query.value(0).toInt();
+//        query.exec(" select Sum(Pago) from RegVehiculos where Tiempo_Total='Mensualidad'");
+//        query.next();
+//        int vpMensualidad = query.value(0).toInt();
 
-        query.exec("select Count(*) from RegVehiculos where Tiempo_Total='Mensualidad'");
-        query.next();
-        int numMensualidadesPagadas = query.value(0).toInt();
+//        query.exec("select Count(*) from RegVehiculos where Tiempo_Total='Mensualidad'");
+//        query.next();
+//        int numMensualidadesPagadas = query.value(0).toInt();
 
-        query.exec("select Sum(Pago) from RegVehiculos where Tipo='Moto'");
-        query.next();
-        int vpMotos = query.value(0).toInt()-vpMensualidad;
+//        query.exec("select Sum(Pago) from RegVehiculos where Tipo='Moto'");
+//        query.next();
+//        int vpMotos = query.value(0).toInt()-vpMensualidad;
 
-        query.exec("select Sum(Pago) from RegVehiculos where Tipo='Moto-Lavada_1'");
-        query.next();
-        int vpMotoLavada_1 = query.value(0).toInt();
+//        query.exec("select Sum(Pago) from RegVehiculos where Tipo='Moto-Lavada_1'");
+//        query.next();
+//        int vpMotoLavada_1 = query.value(0).toInt();
 
-        query.exec("select Sum(Pago) from RegVehiculos where Tipo='Moto-Lavada_2'");
-        query.next();
-        int vpMotoLavada_2 = query.value(0).toInt();
+//        query.exec("select Sum(Pago) from RegVehiculos where Tipo='Moto-Lavada_2'");
+//        query.next();
+//        int vpMotoLavada_2 = query.value(0).toInt();
 
-        query.exec("select  Count(*) from EntradaVehiculos");
-        query.next();
-        int numMotosDentro = query.value(0).toInt();
+//        query.exec("select  Count(*) from EntradaVehiculos");
+//        query.next();
+//        int numMotosDentro = query.value(0).toInt();
 
-        query.exec("select  Count(*) from RegVehiculos where Tipo='Moto'");
-        query.next();
-        int numMotosFuera = query.value(0).toInt();
+//       query.exec("select  Count(*) from RegVehiculos where Tipo='Moto'");
+//       query.next();
+//       int numMotosFuera = query.value(0).toInt();
 
 
-        cierre.fechaHoraInicio = HoraEntrada;
-        cierre.fechaHoraFin = HoraSalida;
-        cierre.usuario = OperarioTurno;
+//        cierre.fechaHoraInicio = HoraEntrada;
+//        cierre.fechaHoraFin = HoraSalida;
+//        cierre.usuario = SessionManager::instance().usuarioActual();
+//
+//        cierre.totalEntradas = numMotosDentro;
+//        cierre.totalSalidas = numMotosFuera;
+//        cierre.totalMensulidadesPago = numMensualidadesPagadas;
+//
+//        cierre.totalesPago["Moto        "] = vpMotos;
+//        cierre.totalesPago["Lavada 1    "] = vpMotoLavada_1;
+//        cierre.totalesPago["Lavada 2    "] = vpMotoLavada_2;
+//        cierre.totalesPago["Mensualidad "] = vpMensualidad;
+//        cierre.totalesPago["Productos   "] = vpProductos;
+//
+//        pm.printCierreCaja(cierre);
 
-        cierre.totalEntradas = numMotosDentro;
-        cierre.totalSalidas = numMotosFuera;
-        cierre.totalMensulidadesPago = numMensualidadesPagadas;
+//        Tabla="RegVehiculos";
+//        Parametros = "Reg_Salida='"+SessionManager::instance().usuarioActual()+"'";
+//        BorrarFilaTabla(Tabla,Parametros);
+//
+//        Tabla = "TablaOtrosVeh";
+//        BorrarFilaTabla(Tabla,Parametros);
+//
+//        query.exec("UPDATE Entregas SET "
+//                   "Fin='20"+HoraSalida+"', "
+//                   "Entrega='"+QString::number(vpMotos+vpMotoLavada_1+vpMotoLavada_2+vpMensualidad+vpProductos)+"' "
+//                   "where Inicio='20"+HoraEntrada+"' ");
 
-        cierre.totalesPago["Moto        "] = vpMotos;
-        cierre.totalesPago["Lavada 1    "] = vpMotoLavada_1;
-        cierre.totalesPago["Lavada 2    "] = vpMotoLavada_2;
-        cierre.totalesPago["Mensualidad "] = vpMensualidad;
-        cierre.totalesPago["Productos   "] = vpProductos;
+        query.exec("UPDATE operarios SET registrado = '0'");
 
-        pm.printCierreCaja(cierre);
 
-        Tabla="RegVehiculos";
-        Parametros = "Reg_Salida='"+OperarioTurno+"'";
-        BorrarFilaTabla(Tabla,Parametros);
 
-        Tabla = "TablaOtrosVeh";
-        BorrarFilaTabla(Tabla,Parametros);
+//        trabajador=new Operario(SessionManager::instance().usuarioActual());
+//        trabajador->HoraEntrada(HoraEntrada);
+//        trabajador->HoraSalida(HoraSalida);
+//        trabajador->TotalRealizado(DineroTurno);
+//        trabajador->TotalMotos(vpMotos);
+//        //trabajador->TotalCarros(vpCarro);
+//        trabajador->TotalMensualidades(vpMensualidad);
+//        //trabajador->TotalOtrosArticulos(vpOtrosArticulos);
+//        trabajador->NumMensualidadesPagadas(numMensualidadesPagadas);
+//        //trabajador->TotalOtrosPagos(vpOtrosPagos);
 
-        query.exec("UPDATE Entregas SET "
-                   "Fin='20"+HoraSalida+"', "
-                   "Entrega='"+QString::number(vpMotos+vpMotoLavada_1+vpMotoLavada_2+vpMensualidad+vpProductos)+"' "
-                   "where Inicio='20"+HoraEntrada+"' ");
-
-        query.exec("UPDATE Operarios SET Registrado = '0'");
-
-        trabajador=new Operario(OperarioTurno);
-        trabajador->HoraEntrada(HoraEntrada);
-        trabajador->HoraSalida(HoraSalida);
-        trabajador->TotalRealizado(DineroTurno);
-        trabajador->TotalMotos(vpMotos);
-        //trabajador->TotalCarros(vpCarro);
-        trabajador->TotalMensualidades(vpMensualidad);
-        //trabajador->TotalOtrosArticulos(vpOtrosArticulos);
-        trabajador->NumMensualidadesPagadas(numMensualidadesPagadas);
-        //trabajador->TotalOtrosPagos(vpOtrosPagos);
-        OperarioTurno="";
-
-        //imprimir(3);//imprimir recibo de entrega
+        SessionManager::instance().logout();
 
         ui->actionLogin->setVisible(true);
         ui->actionEntrega->setVisible(false);
 
-        //Generar Resivo De Salida Con el Valor total del Dia
-
-
     }
     RefrescarTablas();
 }
+*/
+
+// +++++++++++++++++++++++++
+
+void MainWindow::on_pushButtonEntrega_clicked() {
+    int idOp = SessionManager::instance().idActual();
+    DatosCierre cierre = repoVehiculo->obtenerEstadisticasCierre(idOp);
+
+    QString listaProductos = "";
+    if (!cierre.productosVendidos.isEmpty()) {
+        listaProductos = "<br><b>VENTAS VITRINA:</b><br>";
+        QMapIterator<QString, int> i(cierre.productosVendidos);
+        while (i.hasNext()) {
+            i.next();
+            listaProductos += QString("- %1 (Cant: %2)<br>").arg(i.key()).arg(i.value());
+        }
+    }
+
+    QString mensaje = QString(
+                          "<font color='black'>"
+                          "<b>RESUMEN DE CIERRE</b><br>"
+                          "Motos en Patio: %1<br>"
+                          "Salidas Turno: %2<br><br>"
+                          "Parqueo: $%3<br>"
+                          "Lavadas_1: $%4<br>"
+                          "Lavadas_2: $%5<br>"
+                          "Productos: $%6<br>"
+                          "%7" // Aquí se inserta la lista de productos
+                          "--------------------------<br>"
+                          "<b>TOTAL EFECTIVO: $%8</b></font>"
+                          ).arg(cierre.totalMotosDentro)    // 1
+                            .arg(cierre.totalSalidasTurno)  // 2
+                            .arg(cierre.dineroMotos)        // 3
+                            .arg(cierre.dineroLavadas1)     // 4
+                            .arg(cierre.dineroLavadas2)     // 5
+                            .arg(cierre.dineroProductos)    // 6
+                            .arg(listaProductos)            // 7
+                            .arg(cierre.totalEfectivo);     // 8
+
+    if (QMessageBox::question(this, "Cierre de Turno", mensaje, QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+        // Ejecutar cierre y mandar a imprimir
+        if (repoVehiculo->registrarCierreSesion(idOp, cierre.totalEfectivo)) {
+
+            // Estructura para la impresora (printCierreCaja usará los datos de 'cierre')
+            //pm.printCierreCaja(cierre);
+
+            SessionManager::instance().logout();
+
+            ui->actionLogin->setVisible(true);
+            ui->actionEntrega->setVisible(false);
+        }
+    }
+}
+
+//-------------------------
 
 
 void MainWindow::imprimirReciboTabla1(void)// imprime un recibo auxiliar de la tabla de vehiculos dentro
@@ -597,7 +573,7 @@ void MainWindow::imprimirReciboTabla2(void)//imprime un recibo auxiliar de la ta
 
 void MainWindow::on_pushButtonRegPago_clicked()//actualiza el pago de una mensualidad
 {
-    if(OperarioTurno != "" && !ui->lineEditRegPagoPlata->text().isEmpty() && ui->lineEditRegPagoPlata->text().toInt()>0){
+    if(SessionManager::instance().estaLogueado() && !ui->lineEditRegPagoPlata->text().isEmpty() && ui->lineEditRegPagoPlata->text().toInt()>0){
 
             QSqlQuery query;
             QString diasPagados;
@@ -612,7 +588,7 @@ void MainWindow::on_pushButtonRegPago_clicked()//actualiza el pago de una mensua
                        "Inicio=DATE(Fin,'+1 days'), "
                        "Fin=DATE(Fin,'+"+diasPagados+" days'), "
                        "Fecha_Pago=strftime('%Y-%m-%d %H:%M:%S', 'now','localtime'), "
-                       "Registro='"+OperarioTurno+"', "
+                       "Registro='"+SessionManager::instance().usuarioActual()+"', "
                        "Valor='"+ui->lineEditRegPagoPlata->text().toUpper()+"' "
                        "WHERE "
                        "Placa='"+placa+"' ");
@@ -621,7 +597,7 @@ void MainWindow::on_pushButtonRegPago_clicked()//actualiza el pago de una mensua
 
             query.exec("INSERT INTO RegVehiculos"
                 "(Placa,Entrada,Salida,Pago,Reg_Ingreso, Reg_Salida, Tipo,Tiempo_Total)"
-                   "VALUES ( '"+placa+"', strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime'), strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime') , '"+ui->lineEditRegPagoPlata->text()+"', '"+OperarioTurno+"', '"+OperarioTurno+"', 'Moto','Mensualidad')");
+                   "VALUES ( '"+placa+"', strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime'), strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime') , '"+ui->lineEditRegPagoPlata->text()+"', '"+SessionManager::instance().usuarioActual()+"', '"+SessionManager::instance().usuarioActual()+"', 'Moto','Mensualidad')");
 
           /*  QString consulta =  "SELECT Placa, Nombre, Valor, Inicio, Fin, Registro FROM Mensualidades WHERE "
                                 "Nombre='"+ui->lineEditRegPago->text()+"' OR "
@@ -641,7 +617,7 @@ void MainWindow::on_pushButtonRegPago_clicked()//actualiza el pago de una mensua
             structMensualidad.finMensualidad = query.value(4).toString();
             structMensualidad.tipoVehiculo = "Moto";
             structMensualidad.pagoRecibido = query.value(2).toString();
-            structMensualidad.operarioParqueadero = OperarioTurno;
+            structMensualidad.operarioParqueadero = SessionManager::instance().usuarioActual();
 
             pm.printReciboMensualidad(structMensualidad);
 
@@ -703,8 +679,12 @@ void MainWindow::RefrescarTablas()//actualiza las tablas y borra los lineEdit
     modelTres->select();
     ui->tableViewRegVeh->setModel(modelTres);
 
-    //modeloTablaOtros->select();
-    //ui->tableViewOtros->setModel(modeloTablaOtros);
+    modeloTablaProductos->select();
+    ui->tW_Producto_Sel->setModel(modeloTablaProductos);
+
+    modeloTablaCaja->select();
+    ui->twDetalleCaja->setModel(modeloTablaCaja);
+
 
 
     ui->lineEditNombreMensual->clear();
@@ -803,12 +783,14 @@ void MainWindow::initInterfaz()//Inicia la interfaz de la tabla de produtos de l
         qDebug() << "Error al ejecutar la consulta:" << query.lastError().text();
     }
 
+    ConectarTablas();
+
 }
 
 void MainWindow::on_pB_VentaOtroProducto_clicked()
 {
 
-    if(OperarioTurno=="")
+    if(SessionManager::instance().usuarioActual()=="")
         QMessageBox::critical(this, NombreParqueadero,tr("<font size = 15 color = black >Debe Registrarse"));
     else{
 
@@ -836,12 +818,12 @@ void MainWindow::on_pB_VentaOtroProducto_clicked()
             //Inserta en la tabla de ventas para sumar total
             consultaSQL = "INSERT INTO RegVehiculos "
                           "(Placa, Entrada, Salida, Pago, Reg_Ingreso, Reg_Salida, Tipo, Tiempo_Total) "
-                          "VALUES ( '"+query.value(0).toString()+"' , '"+query.value(1).toString()+"' , '"+query.value(2).toString()+"' , '"+query.value(3).toString()+"' , '"+OperarioTurno+"', '"+OperarioTurno+"', 'Producto','Producto')";
+                          "VALUES ( '"+query.value(0).toString()+"' , '"+query.value(1).toString()+"' , '"+query.value(2).toString()+"' , '"+query.value(3).toString()+"' , '"+SessionManager::instance().usuarioActual()+"', '"+SessionManager::instance().usuarioActual()+"', 'Producto','Producto')";
 
             structVentaProductos.nombreProducto =  query.value(0).toString();
             structVentaProductos.precioProducto =  query.value(3).toString();
             structVentaProductos.fechaVenta =   query.value(1).toString();
-            structVentaProductos.operarioParqueadero    = OperarioTurno;
+            structVentaProductos.operarioParqueadero    = SessionManager::instance().usuarioActual();
             structVentaProductos.inventarioRestante    = QString::number((query.value(4).toInt()-1));
 
             query.exec(consultaSQL);
@@ -876,3 +858,23 @@ void MainWindow::on_lineEditRegPago_textChanged(const QString &arg1)
     ui->tableViewRegPago->setModel(modelCuatro);
 }
 
+
+void MainWindow::verificarSesionActiva() {
+    // 1. Agregamos id_operario a la consulta
+    QSqlQuery query("SELECT id_operario, nombre FROM operarios WHERE registrado = '1' LIMIT 1");
+
+    if (query.next()) {
+        int id = query.value(0).toInt();
+        QString nombre = query.value(1).toString();
+
+        SessionManager::instance().login(id, nombre);
+
+        ui->actionLogin->setVisible(false);
+        ui->actionEntrega->setVisible(true);
+
+    } else {
+        SessionManager::instance().logout();
+        ui->actionLogin->setVisible(true);
+        ui->actionEntrega->setVisible(false);
+    }
+}
